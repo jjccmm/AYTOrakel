@@ -77,7 +77,7 @@ def main():
             new_match_probabilities = (counts / total_possibilities_per_girl[:, None]) * 100
             new_match_probabilities = np.nan_to_num(new_match_probabilities)
             if save_reel:
-                save_reel_frames(data, logs, match_probabilities, new_match_probabilities, event, event_frames=3, transition_frames=3)
+                save_reel_frames(data, logs, match_probabilities, new_match_probabilities, event)
             match_probabilities = new_match_probabilities
             save_match_probabilities(data, logs, match_probabilities, event_number, event_name, len(df))
 
