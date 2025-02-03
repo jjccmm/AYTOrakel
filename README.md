@@ -2,8 +2,11 @@
 
 **AYTOrakel** is a Python project that analyzes and visualizes match probabilities and light probabilities for the German RTL show *"Are You The One?"* (AYTO). The project processes data from the show, generates all possible match combinations, and updates probabilities based on events from each week. 
 
+| ![Image 1](s4vip/insta/s4vip_1_2_insta_lights.png) | ![Image 2](s4vip/insta/s4vip_3_2_insta_Matching%20Night.png) |
+|:----------------------:|:----------------------:|
+| Probabilities for the Light Count before the 1st Matching Night |  Matching Probabilites after the 3rd Matching Night |
 
-## 📱 Follow AYTOrakel on Instagram
+## 📱 Follow @AYTOrakel on Instagram
 The predictions are updated after each episode on Instagram.
 [Follow AYTOrakel on Instagram](https://www.instagram.com/AYTOrakel) to stay up to date and join the discussions. 
 
