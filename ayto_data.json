@@ -1,0 +1,254 @@
+{
+  "s4vip": {
+    "group_of_ten": [
+      "Alex",
+      "Antonino",
+      "Chris",
+      "Kaan",
+      "Lars",
+      "Lukas",
+      "Marc-Robin",
+      "Nikola",
+      "Ozan",
+      "Tim"
+    ],
+    "group_of_more": [
+      "Anastasia",
+      "Asena",
+      "Dana",
+      "Emmy",
+      "Gabriela",
+      "Jennifer",
+      "LauraL",
+      "LauraM",
+      "Linda",
+      "Nadja",
+      "Tara"
+    ],
+    "multi_match_size": 2,
+    "known_multi_match_member": "Dana",
+    "weeks": [
+      {
+        "number": 1,
+        "events": [
+          {
+            "type": "box",
+            "couple": [
+              "Marc-Robin",
+              "LauraL"
+            ],
+            "match": "no",
+            "multi_match": []
+          },
+          {
+            "type": "night",
+            "lights": 2,
+            "matching": [
+              "LauraL",
+              "LauraM",
+              "Emmy",
+              "Asena",
+              "Nadja",
+              "Jennifer",
+              "Anastasia",
+              "Tara",
+              "Gabriela",
+              "Linda"
+            ]
+          }
+        ]
+      },
+      {
+        "number": 2,
+        "events": [
+          {
+            "type": "box",
+            "couple": [
+              "Chris",
+              "Emmy"
+            ],
+            "match": "yes",
+            "multi_match": []
+          },
+          {
+            "type": "night",
+            "lights": 3,
+            "matching": [
+              "Jennifer",
+              "Dana",
+              "Emmy",
+              "Nadja",
+              "Anastasia",
+              "LauraM",
+              "Asena",
+              "Tara",
+              "LauraL",
+              "Linda"
+            ]
+          }
+        ]
+      },
+      {
+        "number": 3,
+        "events": [
+          {
+            "type": "box",
+            "couple": [
+              "Alex",
+              "Anastasia"
+            ],
+            "match": "sold",
+            "multi_match": []
+          },
+          {
+            "type": "night",
+            "lights": 3,
+            "matching": [
+              "Anastasia",
+              "Nadja",
+              "Emmy",
+              "Jennifer",
+              "Gabriela",
+              "Linda",
+              "Asena",
+              "LauraL",
+              "LauraM",
+              "Dana"
+            ]
+          }
+        ]
+      },
+      {
+        "number": 4,
+        "events": [
+          {
+            "type": "box",
+            "couple": [
+              "Marc-Robin",
+              "Asena"
+            ],
+            "match": "no",
+            "multi_match": []
+          },
+          {
+            "type": "night",
+            "lights": 1,
+            "matching": [
+              "Jennifer",
+              "Nadja",
+              "Emmy",
+              "Asena",
+              "Tara",
+              "Gabriela",
+              "Linda",
+              "Anastasia",
+              "LauraM",
+              "LauraL"
+            ]
+          }
+        ]
+      },
+      {
+        "number": 5,
+        "events": [
+          {
+            "type": "box",
+            "couple": [
+              "Nikola",
+              "LauraM"
+            ],
+            "match": "sold",
+            "multi_match": []
+          },
+          {
+            "type": "night",
+            "lights": 5,
+            "matching": [
+              "Gabriela",
+              "Asena",
+              "Emmy",
+              "Tara",
+              "Nadja",
+              "Jennifer",
+              "Anastasia",
+              "LauraL",
+              "Dana",
+              "Linda"
+            ]
+          }
+        ]
+      },
+      {
+        "number": 6,
+        "events": [
+          {
+            "type": "box",
+            "couple": [
+              "Ozan",
+              "Anastasia"
+            ],
+            "match": "yes",
+            "multi_match": []
+          },
+          {
+            "type": "night",
+            "lights": 6,
+            "matching": [
+              "Gabriela",
+              "Asena",
+              "Emmy",
+              "Tara",
+              "Dana",
+              "Jennifer",
+              "LauraM",
+              "Nadja",
+              "Anastasia",
+              "Linda"
+            ]
+          }
+        ]
+      },
+      {
+        "number": 7,
+        "events": [
+          {
+            "type": "box",
+            "couple": [
+              "Lukas",
+              "Jennifer"
+            ],
+            "match": "no",
+            "multi_match": []
+          },
+          {
+            "type": "night",
+            "lights": 6,
+            "matching": [
+              "Gabriela",
+              "Asena",
+              "Emmy",
+              "Tara",
+              "LauraL",
+              "Dana",
+              "LauraM",
+              "Nadja",
+              "Anastasia",
+              "Linda"
+            ]
+          }
+        ]
+      },
+      {
+        "number": 8,
+        "events": [
+        ]
+      },
+      {
+        "number": 9,
+        "events": [
+        ]
+      }
+    ]
+  }
+}
+
