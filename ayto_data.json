@@ -93,7 +93,7 @@
       {
         "number": 2,
         "events": [
-          {"type": "box", "couple": ["Francesco", "Jules"], "match": "yes", "multi_match": []},
+          {"type": "box", "couple": ["Francesco", "Jules"], "match": "yes", "multi_match": []}
         ]
       },
       {
@@ -688,4 +688,3 @@
     ]
   }
 }
-
