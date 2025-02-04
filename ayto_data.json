@@ -77,6 +77,83 @@
       }
     ]
   },
+  "s1vip": {
+    "group_of_ten": ["Alex", "Danilo", "Diogo", "Eugen", "Francesco", "Jamy", "Josua", "Manuel", "Salvatore", "Tommy"],
+    "group_of_more": ["Aurelia", "Finnja", "Jacky", "Jill", "Jules", "Kathleen", "Melina", "Sarah", "Steffi", "Vanessa", "Walentina"],
+    "multi_match_size": 2,
+    "known_multi_match_member": "Vanessa",
+    "weeks": [
+      {
+        "number": 1,
+        "events": [
+          {"type": "box", "couple": ["Danilo", "Finnja"], "match": "no", "multi_match": []},
+          {"type": "night", "lights": 3, "matching": ["Jules", "Steffi", "Aurelia", "Walentina", "Finnja", "Jill", "Sarah", "Kathleen", "Jacky", "Melina"]}
+        ]
+      },
+      {
+        "number": 2,
+        "events": [
+          {"type": "box", "couple": ["Francesco", "Jules"], "match": "yes", "multi_match": []},
+        ]
+      },
+      {
+        "number": 3,
+        "events": [
+          {"type": "box", "couple": ["Tommy", "Walentina"], "match": "no", "multi_match": []},
+          {"type": "night", "lights": 3, "matching": ["Finnja", "Sarah", "Aurelia", "Steffi", "Jules", "Jill", "Walentina", "Kathleen", "Jacky", "Melina"]}
+        ]
+      },
+      {
+        "number": 4,
+        "events": [
+          {"type": "box", "couple": ["Diogo", "Aurelia"], "match": "sold", "multi_match": []},
+          {"type": "night", "lights": 4, "matching": ["Steffi", "Melina", "Aurelia", "Finnja", "Jules", "Vanessa", "Sarah", "Kathleen", "Walentina", "Jill"]}
+        ]
+      },
+      {
+        "number": 5,
+        "events": [
+          {"type": "box", "couple": ["Tommy", "Melina"], "match": "sold", "multi_match": []},
+          {"type": "night", "lights": 3, "matching": ["Sarah", "Aurelia", "Vanessa", "Finnja", "Jules", "Steffi", "Walentina", "Jill", "Kathleen", "Melina"]}
+        ]
+      },
+      {
+        "number": 6,
+        "events": [
+          {"type": "box", "couple": ["Salvatore", "Finnja"], "match": "no", "multi_match": []},
+          {"type": "night", "lights": 3, "matching": ["Steffi", "Jill", "Aurelia", "Finnja", "Jules", "Sarah", "Walentina", "Kathleen", "Jacky", "Melina"]}
+        ]
+      },
+      {
+        "number": 7,
+        "events": [
+          {"type": "box", "couple": ["Eugen", "Finnja"], "match": "no", "multi_match": []},
+          {"type": "night", "lights": 2, "matching": ["Jacky", "Aurelia", "Vanessa", "Jill", "Jules", "Finnja", "Sarah", "Kathleen", "Walentina", "Melina"]}
+        ]
+      },
+      {
+        "number": 8,
+        "events": [
+          {"type": "box", "couple": ["Eugen", "Steffi"], "match": "no", "multi_match": []},
+          {"type": "night", "lights": 1, "matching": ["Melina", "Aurelia", "Vanessa", "Jacky", "Jules", "Sarah", "Walentina", "Finnja", "Jill", "Steffi"]}
+        ]
+      },
+      {
+        "number": 9,
+        "events": [
+          {"type": "box", "couple": ["Josua", "Sarah"], "match": "no", "multi_match": []},
+          {"type": "night", "lights": 4, "matching": ["Sarah", "Jill", "Aurelia", "Melina", "Jules", "Steffi", "Vanessa", "Kathleen", "Walentina", "Finnja"]}
+        ]
+      },
+      {
+        "number": 10,
+        "events": [
+          {"type": "box", "couple": ["Josua", "Aurelia"], "match": "yes", "multi_match": []},
+          {"type": "night", "lights": 7, "matching": ["Vanessa", "Sarah", "Jill", "Walentina", "Jules", "Steffi", "Aurelia", "Kathleen", "Jacky", "Finnja"]}
+        ]
+      }
+    ]
+  },
   "s2": {
     "group_of_ten": ["Aaron", "Dario", "Dominik", "Germain", "Marc", "Marcel", "Marko", "Marvin", "Maximilian", "Sascha"],
     "group_of_more": ["Christin", "Jill", "Kathleen", "Laura", "Leonie", "Melissa", "Mirjam", "Sabrina", "Vanessa E.", "Vanessa M.", "Victoria"],
@@ -155,6 +232,315 @@
       }
     ]
   },
+  "s2vip": {
+    "group_of_ten": ["Anna", "Cecilia", "Celina", "Franzi", "Gina", "Isabelle", "Karina", "Luisa", "Ricarda", "Zoe"],
+    "group_of_more": ["Amadu", "Calvin", "Fabio", "Felix", "Luca", "Lukas", "Martin", "Maurice", "Max", "Micha", "Pharrell"],
+    "multi_match_size": 2,
+    "known_multi_match_member": "Felix",
+    "weeks": [
+      {
+        "number": 1,
+        "events": [
+          {"type": "box", "couple": ["Zoe", "Martin"], "match": "no", "multi_match": []},
+          {"type": "night", "lights": 3, "matching": ["Micha", "Amadu", "Martin", "Max", "Calvin", "Lukas", "Pharrell", "Fabio", "Maurice", "Luca"]}
+        ]
+      },
+      {
+        "number": 2,
+        "events": [
+          {"type": "box", "couple": ["Karina", "Pharrell"], "match": "no", "multi_match": []},
+          {"type": "night", "lights": 2, "matching": ["Micha", "Pharrell", "Max", "Luca", "Amadu", "Martin", "Fabio", "Calvin", "Maurice", "Lukas"]}
+        ]
+      },
+      {
+        "number": 3,
+        "events": [
+          {"type": "box", "couple": ["Celina", "Lukas"], "match": "no", "multi_match": []},
+          {"type": "night", "lights": 3, "matching": ["Martin", "Amadu", "Fabio", "Lukas", "Micha", "Luca", "Calvin", "Pharrell", "Maurice", "Max"]}
+        ]
+      },
+      {
+        "number": 4,
+        "events": [
+          {"type": "box", "couple": ["Isabelle", "Amadu"], "match": "sold", "multi_match": []},
+          {"type": "box", "couple": ["Luisa", "Lukas"], "match": "yes", "multi_match": []}
+        ]
+      },
+      {
+        "number": 5,
+        "events": [
+          {"type": "box", "couple": ["Ricarda", "Felix"], "match": "no", "multi_match": []},
+          {"type": "night", "lights": 3, "matching": ["Pharrell", "Amadu", "Fabio", "Micha", "Felix", "Maurice", "Martin", "Lukas", "Max", "Luca"]}
+        ]
+      },
+      {
+        "number": 6,
+        "events": [
+          {"type": "box", "couple": ["Isabelle", "Pharrell"], "match": "no", "multi_match": []},
+          {"type": "night", "lights": 3, "matching": ["Micha", "Maurice", "Fabio", "Max", "Felix", "Martin", "Calvin", "Lukas", "Pharrell", "Luca"]}
+        ]
+      },
+      {
+        "number": 7,
+        "events": [
+          {"type": "box", "couple": ["Cecilia", "Amadu"], "match": "yes", "multi_match": []},
+          {"type": "night", "lights": 4, "matching": ["Micha", "Amadu", "Fabio", "Max", "Felix", "Martin", "Calvin", "Lukas", "Pharrell", "Luca"]}
+        ]
+      },
+      {
+        "number": 8,
+        "events": [
+          {"type": "box", "couple": ["Anna", "Micha"], "match": "yes", "multi_match": []},
+          {"type": "night", "lights": 5, "matching": ["Micha", "Amadu", "Luca", "Calvin", "Fabio", "Felix", "Martin", "Lukas", "Pharrell", "Maurice"]}
+        ]
+      },
+      {
+        "number": 9,
+        "events": [
+          {"type": "box", "couple": ["Ricarda", "Pharrell"], "match": "no", "multi_match": []},
+          {"type": "night", "lights": 7, "matching": ["Micha", "Amadu", "Fabio", "Max", "Calvin", "Felix", "Martin", "Lukas", "Maurice", "Pharrell"]}
+        ]
+      },
+      {
+        "number": 10,
+        "events": [
+          {"type": "box", "couple": ["Franzi", "Max"], "match": "no", "multi_match": []},
+          {"type": "night", "lights": 10, "matching": ["Micha", "Amadu", "Fabio", "Calvin", "Martin", "Felix", "Luca", "Lukas", "Maurice", "Pharrell"]}
+        ]
+      }
+    ]
+  },
+  "s3": {
+    "group_of_ten": ["Andre", "Antonino", "Dustin", "Jordi", "Leon", "Marius", "Max", "Mike", "Tim", "William"],
+    "group_of_more": ["Dana", "Estelle", "Isabelle", "Jessica", "Joelina", "Kerstin", "Marie", "Monami", "Raphaela", "Zaira", "Desirée"],
+    "multi_match_size": 2,
+    "known_multi_match_member": "Desirée",
+    "weeks": [
+      {
+        "number": 1,
+        "events": [
+          {"type": "box", "couple": ["Mike", "Jessica"], "match": "no", "multi_match": []},
+          {"type": "night", "lights": 3, "matching": ["Raphaela", "Monami", "Zaira", "Estelle", "Jessica", "Isabelle", "Kerstin", "Joelina", "Marie", "Dana"]}
+        ]
+      },
+      {
+        "number": 2,
+        "events": [
+          {"type": "box", "couple": ["Leon", "Monami"], "match": "no", "multi_match": []},
+          {"type": "night", "lights": 2, "matching": ["Dana", "Monami", "Isabelle", "Zaira", "Estelle", "Marie", "Kerstin", "Joelina", "Jessica", "Raphaela"]}
+        ]
+      },
+      {
+        "number": 3,
+        "events": [
+          {"type": "box", "couple": ["Andre", "Raphaela"], "match": "no", "multi_match": []},
+          {"type": "night", "lights": 2, "matching": ["Raphaela", "Kerstin", "Zaira", "Jessica", "Estelle", "Isabelle", "Monami", "Joelina", "Marie", "Dana"]}
+        ]
+      },
+      {
+        "number": 4,
+        "events": [
+          {"type": "box", "couple": ["William", "Dana"], "match": "sold", "multi_match": []},
+          {"type": "night", "lights": 3, "matching": ["Isabelle", "Monami", "Zaira", "Raphaela", "Estelle", "Jessica", "Marie", "Joelina", "Kerstin", "Dana"]}
+        ]
+      },
+      {
+        "number": 5,
+        "events": [
+          {"type": "box", "couple": ["Antonino", "Monami"], "match": "no", "multi_match": []},
+          {"type": "night", "lights": 2, "matching": ["Joelina", "Kerstin", "Isabelle", "Zaira", "Jessica", "Raphaela", "Monami", "Estelle", "Desirée", "Dana"]}
+        ]
+      },
+      {
+        "number": 6,
+        "events": [
+          {"type": "box", "couple": ["Max", "Jessica"], "match": "no", "multi_match": []},
+          {"type": "night", "lights": 4, "matching": ["Marie", "Dana", "Isabelle", "Desirée", "Jessica", "Zaira", "Kerstin", "Estelle", "Joelina", "Raphaela"]}
+        ]
+      },
+      {
+        "number": 7,
+        "events": [
+          {"type": "box", "couple": ["Marius", "Zaira"], "match": "yes", "multi_match": []},
+          {"type": "night", "lights": 6, "matching": ["Desirée", "Dana", "Isabelle", "Monami", "Jessica", "Zaira", "Marie", "Joelina", "Kerstin", "Raphaela"]}
+        ]
+      },
+      {
+        "number": 8,
+        "events": [
+          {"type": "box", "couple": ["Jordi", "Raphaela"], "match": "no", "multi_match": []},
+          {"type": "night", "lights": 4, "matching": ["Marie", "Dana", "Isabelle", "Monami", "Jessica", "Zaira", "Kerstin", "Estelle", "Joelina", "Raphaela"]}
+        ]
+      },
+      {
+        "number": 9,
+        "events": [
+          {"type": "box", "couple": ["Max", "Kerstin"], "match": "no", "multi_match": []},
+          {"type": "night", "lights": 2, "matching": ["Desirée", "Isabelle", "Dana", "Monami", "Jessica", "Zaira", "Raphaela", "Estelle", "Joelina", "Marie"]}
+        ]
+      },
+      {
+        "number": 10,
+        "events": [
+          {"type": "box", "couple": ["Dustin", "Isabelle"], "match": "no", "multi_match": []},
+          {"type": "night", "lights": 10, "matching": ["Isabelle", "Dana", "Marie", "Estelle", "Jessica", "Zaira", "Monami", "Joelina", "Kerstin", "Raphaela"]}
+        ]
+      }
+    ]
+  },
+  "s3vip": {
+    "group_of_ten": ["Alicia", "Shakira", "Darya", "Jenny", "Kim", "Marie", "Paulina", "Sabrina", "Sandra", "Steffi"],
+    "group_of_more": ["Danilo", "Elia", "Emanuell", "Fabio", "Teezy", "Marvin", "Max", "Mike", "Paco", "Peter", "Steffen"],
+    "multi_match_size": 2,
+    "known_multi_match_member": "Max",
+    "weeks": [
+      {
+        "number": 1,
+        "events": [
+          {"type": "box", "couple": ["Jenny", "Danilo"], "match": "no", "multi_match": []},
+          {"type": "night", "lights": 3, "matching": ["Peter", "Marvin", "Danilo", "Elia", "Mike", "Fabio", "Steffen", "Emanuell", "Paco", "Teezy"]}
+        ]
+      },
+      {
+        "number": 2,
+        "events": [
+          {"type": "box", "couple": ["Jenny", "Elia"], "match": "no", "multi_match": []},
+          {"type": "night", "lights": 2, "matching": ["Steffen", "Peter", "Emanuell", "Marvin", "Paco", "Fabio", "Danilo", "Mike", "Elia", "Teezy"]}
+        ]
+      },
+      {
+        "number": 3,
+        "events": [
+          {"type": "box", "couple": ["Darya", "Elia"], "match": "no", "multi_match": []},
+          {"type": "night", "lights": 2, "matching": ["Steffen", "Fabio", "Danilo", "Emanuell", "Teezy", "Elia", "Mike", "Peter", "Paco", "Marvin"]}
+        ]
+      },
+      {
+        "number": 4,
+        "events": [
+          {"type": "box", "couple": ["Kim", "Mike"], "match": "no", "multi_match": []},
+          {"type": "night", "lights": 4, "matching": ["Teezy", "Fabio", "Danilo", "Marvin", "Peter", "Elia", "Max", "Paco", "Steffen", "Emanuell"]}
+        ]
+      },
+      {
+        "number": 5,
+        "events": [
+          {"type": "box", "couple": ["Darya", "Danilo"], "match": "yes", "multi_match": []},
+          {"type": "night", "lights": 3, "matching": ["Steffen", "Paco", "Danilo", "Marvin", "Teezy", "Fabio", "Mike", "Emanuell", "Max", "Elia"]}
+        ]
+      },
+      {
+        "number": 6,
+        "events": [
+          {"type": "box", "couple": ["Alicia", "Teezy"], "match": "no", "multi_match": []},
+          {"type": "night", "lights": 4, "matching": ["Paco", "Fabio", "Danilo", "Marvin", "Teezy", "Elia", "Mike", "Peter", "Steffen", "Emanuell"]}
+        ]
+      },
+      {
+        "number": 7,
+        "events": [
+          {"type": "night", "lights": 3, "matching": ["Fabio", "Max", "Danilo", "Paco", "Teezy", "Steffen", "Marvin", "Emanuell", "Mike", "Elia"]}
+        ]
+      },
+      {
+        "number": 8,
+        "events": [
+          {"type": "box", "couple": ["Sabrina", "Max"], "match": "no", "multi_match": []},
+          {"type": "night", "lights": 1, "matching": ["Paco", "Steffen", "Danilo", "Marvin", "Max", "Elia", "Teezy", "Emanuell", "Fabio", "Mike"]}
+        ]
+      },
+      {
+        "number": 9,
+        "events": [
+          {"type": "box", "couple": ["Steffi", "Emanuell"], "match": "yes", "multi_match": []},
+          {"type": "night", "lights": 6, "matching": ["Steffen", "Marvin", "Danilo", "Max", "Teezy", "Fabio", "Paco", "Mike", "Elia", "Emanuell"]}
+        ]
+      },
+      {
+        "number": 10,
+        "events": [
+          {"type": "box", "couple": ["Alicia", "Elia"], "match": "yes", "multi_match": []},
+          {"type": "night", "lights": 10, "matching": ["Elia", "Marvin", "Danilo", "Paco", "Teezy", "Fabio", "Max", "Mike", "Steffen", "Emanuell"]}
+        ]
+      }
+    ]
+  },
+  "s4": {
+    "group_of_ten": [
+      "Vanessa", "Carina", "Henna", "Juliette", "Larissa", "Aurelia", "Valeria", "Dorna", "Steffi", "Caro"
+    ],
+    "group_of_more": [
+      "Sasa", "Deniz", "Marwin", "Kenneth", "Barkin", "Pascal", "Burim", "Joel", "Cris", "Max", "Ken"
+    ],
+    "multi_match_size": 2,
+    "known_multi_match_member": "Ken",
+    "weeks": [
+      {
+        "number": 1,
+        "events": [
+          {"type": "box", "couple": ["Valeria", "Marwin"], "match": "no", "multi_match": []},
+          {"type": "box", "couple": ["Dorna", "Kenneth"], "match": "no", "multi_match": []},
+          {"type": "night", "lights": 3, "matching": ["Sasa", "Ken", "Kenneth", "Burim", "Joel", "Deniz", "Max", "Marwin", "Cris", "Barkin"]}
+        ]
+      },
+      {
+        "number": 2,
+        "events": [
+          {"type": "box", "couple": ["Carina", "Burim"], "match": "no", "multi_match": []},
+          {"type": "night", "lights": 3, "matching": ["Sasa", "Ken", "Kenneth", "Barkin", "Joel", "Burim", "Pascal", "Marwin", "Cris", "Max"]}
+        ]
+      },
+      {
+        "number": 3,
+        "events": [
+          {"type": "box", "couple": ["Steffi", "Cris"], "match": "yes", "multi_match": []},
+          {"type": "night", "lights": 2, "matching": ["Marwin", "Sasa", "Ken", "Barkin", "Joel", "Kenneth", "Max", "Deniz", "Cris", "Pascal"]}
+        ]
+      },
+      {
+        "number": 4,
+        "events": [
+          {"type": "box", "couple": ["Valeria", "Max"], "match": "no", "multi_match": []},
+          {"type": "night", "lights": 3, "matching": ["Sasa", "Pascal", "Ken", "Kenneth", "Deniz", "Marwin", "Joel", "Burim", "Cris", "Max"]}
+        ]
+      },
+      {
+        "number": 5,
+        "events": [
+          {"type": "box", "couple": ["Caro", "Ken"], "match": "yes", "multi_match": ["Max"]},
+          {"type": "night", "lights": 4, "matching": ["Sasa", "Pascal", "Kenneth", "Barkin", "Deniz", "Marwin", "Joel", "Burim", "Cris", "Ken"]}
+        ]
+      },
+      {
+        "number": 6,
+        "events": [
+          {"type": "box", "couple": ["Dorna", "Burim"], "match": "no", "multi_match": []},
+          {"type": "night", "lights": 3, "matching": ["Joel", "Sasa", "Kenneth", "Barkin", "Marwin", "Burim", "Pascal", "Deniz", "Cris", "Ken"]}
+        ]
+      },
+      {
+        "number": 7,
+        "events": [
+          {"type": "box", "couple": ["Juliette", "Joel"], "match": "no", "multi_match": []},
+          {"type": "night", "lights": 2, "matching": ["Deniz", "Marwin", "Burim", "Kenneth", "Sasa", "Joel", "Pascal", "Barkin", "Cris", "Ken"]}
+        ]
+      },
+      {
+        "number": 8,
+        "events": [
+          {"type": "box", "couple": ["Dorna", "Marwin"], "match": "no", "multi_match": []},
+          {"type": "night", "lights": 2, "matching": ["Sasa", "Kenneth", "Deniz", "Barkin", "Pascal", "Marwin", "Burim", "Joel", "Cris", "Ken"]}
+        ]
+      },
+      {
+        "number": 9,
+        "events": [
+          {"type": "box", "couple": ["Carina", "Pascal"], "match": "no", "multi_match": []},
+          {"type": "night", "lights": 10, "matching": ["Marwin", "Deniz", "Kenneth", "Burim", "Barkin", "Pascal", "Joel", "Sasa", "Cris", "Ken"]}
+        ]
+      }
+    ]
+  },
   "s4vip": {
     "group_of_ten": ["Alex", "Antonino", "Chris", "Kaan", "Lars", "Lukas", "Marc-Robin", "Nikola", "Ozan", "Tim"],
     "group_of_more": ["Anastasia", "Asena", "Dana", "Emmy", "Gabriela", "Jennifer", "LauraL", "LauraM", "Linda", "Nadja", "Tara"],
@@ -171,181 +557,43 @@
       {
         "number": 2,
         "events": [
-          {
-            "type": "box",
-            "couple": [
-              "Chris",
-              "Emmy"
-            ],
-            "match": "yes",
-            "multi_match": []
-          },
-          {
-            "type": "night",
-            "lights": 3,
-            "matching": [
-              "Jennifer",
-              "Dana",
-              "Emmy",
-              "Nadja",
-              "Anastasia",
-              "LauraM",
-              "Asena",
-              "Tara",
-              "LauraL",
-              "Linda"
-            ]
-          }
+          {"type": "box", "couple": ["Chris", "Emmy"], "match": "yes", "multi_match": []},
+          {"type": "night", "lights": 3, "matching": ["Jennifer", "Dana", "Emmy", "Nadja", "Anastasia", "LauraM", "Asena", "Tara", "LauraL", "Linda"]}
         ]
       },
       {
         "number": 3,
         "events": [
-          {
-            "type": "box",
-            "couple": [
-              "Alex",
-              "Anastasia"
-            ],
-            "match": "sold",
-            "multi_match": []
-          },
-          {
-            "type": "night",
-            "lights": 3,
-            "matching": [
-              "Anastasia",
-              "Nadja",
-              "Emmy",
-              "Jennifer",
-              "Gabriela",
-              "Linda",
-              "Asena",
-              "LauraL",
-              "LauraM",
-              "Dana"
-            ]
-          }
+          {"type": "box", "couple": ["Alex", "Anastasia"], "match": "sold", "multi_match": []},
+          {"type": "night", "lights": 3, "matching": ["Anastasia", "Nadja", "Emmy", "Jennifer", "Gabriela", "Linda", "Asena", "LauraL", "LauraM", "Dana"]}
         ]
       },
       {
         "number": 4,
         "events": [
-          {
-            "type": "box",
-            "couple": [
-              "Marc-Robin",
-              "Asena"
-            ],
-            "match": "no",
-            "multi_match": []
-          },
-          {
-            "type": "night",
-            "lights": 1,
-            "matching": [
-              "Jennifer",
-              "Nadja",
-              "Emmy",
-              "Asena",
-              "Tara",
-              "Gabriela",
-              "Linda",
-              "Anastasia",
-              "LauraM",
-              "LauraL"
-            ]
-          }
+          {"type": "box", "couple": ["Marc-Robin", "Asena"], "match": "no", "multi_match": []},
+          {"type": "night", "lights": 1, "matching": ["Jennifer", "Nadja", "Emmy", "Asena", "Tara", "Gabriela", "Linda", "Anastasia", "LauraM", "LauraL"]}
         ]
       },
       {
         "number": 5,
         "events": [
-          {
-            "type": "box",
-            "couple": [
-              "Nikola",
-              "LauraM"
-            ],
-            "match": "sold",
-            "multi_match": []
-          },
-          {
-            "type": "night",
-            "lights": 5,
-            "matching": [
-              "Gabriela",
-              "Asena",
-              "Emmy",
-              "Tara",
-              "Nadja",
-              "Jennifer",
-              "Anastasia",
-              "LauraL",
-              "Dana",
-              "Linda"
-            ]
-          }
+          {"type": "box", "couple": ["Nikola", "LauraM"], "match": "sold", "multi_match": []},
+          {"type": "night", "lights": 5, "matching": ["Gabriela", "Asena", "Emmy", "Tara", "Nadja", "Jennifer", "Anastasia", "LauraL", "Dana", "Linda"]}
         ]
       },
       {
         "number": 6,
         "events": [
-          {
-            "type": "box",
-            "couple": [
-              "Ozan",
-              "Anastasia"
-            ],
-            "match": "yes",
-            "multi_match": []
-          },
-          {
-            "type": "night",
-            "lights": 6,
-            "matching": [
-              "Gabriela",
-              "Asena",
-              "Emmy",
-              "Tara",
-              "Dana",
-              "Jennifer",
-              "LauraM",
-              "Nadja",
-              "Anastasia",
-              "Linda"
-            ]
-          }
+          {"type": "box", "couple": ["Ozan", "Anastasia"], "match": "yes", "multi_match": []},
+          {"type": "night", "lights": 6, "matching": ["Gabriela", "Asena", "Emmy", "Tara", "Dana", "Jennifer", "LauraM", "Nadja", "Anastasia", "Linda"]}
         ]
       },
       {
         "number": 7,
         "events": [
-          {
-            "type": "box",
-            "couple": [
-              "Lukas",
-              "Jennifer"
-            ],
-            "match": "no",
-            "multi_match": []
-          },
-          {
-            "type": "night",
-            "lights": 6,
-            "matching": [
-              "Gabriela",
-              "Asena",
-              "Emmy",
-              "Tara",
-              "LauraL",
-              "Dana",
-              "LauraM",
-              "Nadja",
-              "Anastasia",
-              "Linda"
-            ]
-          }
+          {"type": "box", "couple": ["Lukas", "Jennifer"], "match": "no", "multi_match": []},
+          { "type": "night", "lights": 6, "matching": ["Gabriela", "Asena", "Emmy", "Tara", "LauraL", "Dana", "LauraM", "Nadja", "Anastasia", "Linda"]}
         ]
       },
       {
@@ -356,6 +604,85 @@
       {
         "number": 9,
         "events": [
+        ]
+      }
+    ]
+  },
+  "s5": {
+    "group_of_ten": ["Eti", "Gerrit", "Kevin", "Martin", "Paddy", "Paul", "Ryan", "Sandro", "Sidar", "Wilson"],
+    "group_of_more": ["Afra", "Edda", "Jana", "Julia", "Lina", "Lisa-Marie", "Maja", "Melanie", "Pia", "Shelly", "Sina", "Tais"],
+    "multi_match_size": 3,
+    "known_multi_match_member": "Melanie",
+    "weeks": [
+      {
+        "number": 1,
+        "events": [
+          {"type": "box", "couple": ["Paul", "Jana"], "match": "no", "multi_match": []},
+          {"type": "night", "lights": 2, "matching": ["Lisa-Marie", "Pia", "Sina", "Julia", "Maja", "Tais", "Lina", "Edda", "Jana", "Shelly"]}
+        ]
+      },
+      {
+        "number": 2,
+        "events": [
+          {"type": "box", "couple": ["Ryan", "Lina"], "match": "no", "multi_match": []},
+          {"type": "night", "lights": 2, "matching": ["Afra", "Tais", "Sina", "Lina", "Shelly", "Lisa-Marie", "Pia", "Edda", "Jana", "Maja"]}
+        ]
+      },
+      {
+        "number": 3,
+        "events": [
+          {"type": "box", "couple": ["Kevin", "Maja"], "match": "no", "multi_match": []},
+          {"type": "box", "couple": ["Eti", "Melanie"], "match": "no", "multi_match": []},
+          {"type": "night", "lights": 4, "matching": ["Maja", "Tais", "Melanie", "Lisa-Marie", "Julia", "Edda", "Jana", "Sina", "Afra", "Shelly"]}
+        ]
+      },
+      {
+        "number": 4,
+        "events": [
+          {"type": "box", "couple": ["Wilson", "Shelly"], "match": "yes", "multi_match": []},
+          {"type": "night", "lights": 3, "matching": ["Afra", "Tais", "Sina", "Julia", "Lina", "Lisa-Marie", "Edda", "Pia", "Jana", "Shelly"]}
+        ]
+      },
+      {
+        "number": 5,
+        "events": [
+          {"type": "box", "couple": ["Gerrit", "Tais"], "match": "yes", "multi_match": ["Pia", "Melanie"]},
+          {"type": "night", "lights": 4, "matching": ["Maja", "Tais", "Julia", "Lisa-Marie", "Lina", "Edda", "Jana", "Sina", "Afra", "Shelly"]}
+        ]
+      },
+      {
+        "number": 6,
+        "events": [
+          {"type": "box", "couple": ["Sandro", "Sina"], "match": "no", "multi_match": []},
+          {"type": "night", "lights": 5, "matching": ["Maja", "Tais", "Lina", "Lisa-Marie", "Edda", "Sina", "Jana", "Afra", "Julia", "Shelly"]}
+        ]
+      },
+      {
+        "number": 7,
+        "events": [
+          {"type": "box", "couple": ["Paul", "Julia"], "match": "no", "multi_match": []},
+          {"type": "night", "lights": 5, "matching": ["Maja", "Tais", "Lina", "Afra", "Jana", "Sina", "Edda", "Julia", "Lisa-Marie", "Shelly"]}
+        ]
+      },
+      {
+        "number": 8,
+        "events": [
+          {"type": "box", "couple": ["Eti", "Maja"], "match": "sold", "multi_match": []},
+          {"type": "night", "lights": 4, "matching": ["Afra", "Tais", "Lina", "Lisa-Marie", "Jana", "Sina", "Edda", "Julia", "Maja", "Shelly"]}
+        ]
+      },
+      {
+        "number": 9,
+        "events": [
+          {"type": "box", "couple": ["Sandro", "Afra"], "match": "no", "multi_match": []},
+          {"type": "night", "lights": 6, "matching": ["Maja", "Tais", "Lina", "Lisa-Marie", "Sina", "Edda", "Jana", "Julia", "Afra", "Shelly"]}
+        ]
+      },
+      {
+        "number": 10,
+        "events": [
+          {"type": "box", "couple": ["Kevin", "Lina"], "match": "yes", "multi_match": []},
+          {"type": "night", "lights": 7, "matching": ["Maja", "Tais", "Lina", "Afra", "Edda", "Lisa-Marie", "Jana", "Julia", "Sina", "Shelly"]}
         ]
       }
     ]
