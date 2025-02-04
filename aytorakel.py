@@ -14,7 +14,7 @@ import shutil
 
 
 def main():
-    season = 's4vip'
+    season = 's1'
     save_reel = True
     
     data = read_season_data(season=season)
@@ -93,9 +93,10 @@ def main():
             
 
 def generate_week_cover(data, week_number):
-    font_90 = ImageFont.truetype('DelaGothicOne-Regular.ttf', size=90)
-    font_18 = ImageFont.truetype('DelaGothicOne-Regular.ttf', size=18)
-    img = Image.open('s4vip/insta/background.png')
+    season = data['season']
+    font_90 = ImageFont.truetype('insta_styles/DelaGothicOne-Regular.ttf', size=90)
+    font_18 = ImageFont.truetype('insta_styles/DelaGothicOne-Regular.ttf', size=18)
+    img = Image.open(f'insta_styles/image_backgrounds/ayto_{season}.png')
     
     ayto='AYTO'
     season_number = data['season'].replace('vip','').replace('s','')
@@ -257,7 +258,7 @@ def update_after_night_event(data, logs, df, event, event_number):
 
 def create_folders(season):
     season_root = os.path.join(os.getcwd(), season)
-    for sub_folder in ['reel_raw', 'reel_frames', 'matches', 'matches_tight', 'lights', 'lights_tight']:
+    for sub_folder in ['reel_raw', 'reel_frames', 'matches', 'matches_tight', 'lights', 'lights_tight', 'insta']:
         sub_folder_path = os.path.join(season_root, sub_folder)
         os.makedirs(sub_folder_path, exist_ok=True)
 
@@ -410,13 +411,13 @@ def save_match_probabilities(data, logs, match_probabilities, event_number, even
 
 
 def save_insta_probabilities(data, tight_image_name, event_number, event_name, remaining_combinations):
-    font_18 = ImageFont.truetype('DelaGothicOne-Regular.ttf', size=18)
-    font_30 = ImageFont.truetype('DelaGothicOne-Regular.ttf', size=30)
-    font_85 = ImageFont.truetype('DelaGothicOne-Regular.ttf', size=85)
+    font_18 = ImageFont.truetype('insta_styles/DelaGothicOne-Regular.ttf', size=18)
+    font_30 = ImageFont.truetype('insta_styles/DelaGothicOne-Regular.ttf', size=30)
+    font_85 = ImageFont.truetype('insta_styles/DelaGothicOne-Regular.ttf', size=85)
     
     season = data['season']
-    img = Image.open(f'{season}/insta/background.png')
-    face_layer = Image.open(f'{season}/insta/face_layer.png')
+    img = Image.open(f'insta_styles/image_backgrounds/ayto_{season}.png')
+    face_layer = Image.open(f'insta_styles/image_face_layers/ayto_{season}.png')
     
     img_match_probs = Image.open(f'{season}/matches_tight/{tight_image_name}')
     img_match_probs.thumbnail((810, 891), Image.LANCZOS)
@@ -576,14 +577,14 @@ def save_light_probabilities(data, logs, df, event_number, event):
 
 
 def save_insta_light_probabilities(data, logs, tight_image_name, event_number, number_of_lights):
-    font_18 = ImageFont.truetype('DelaGothicOne-Regular.ttf', size=18)
-    font_30 = ImageFont.truetype('DelaGothicOne-Regular.ttf', size=30)
-    font_50 = ImageFont.truetype('DelaGothicOne-Regular.ttf', size=50)
-    font_85 = ImageFont.truetype('DelaGothicOne-Regular.ttf', size=85)
+    font_18 = ImageFont.truetype('insta_styles/DelaGothicOne-Regular.ttf', size=18)
+    font_30 = ImageFont.truetype('insta_styles/DelaGothicOne-Regular.ttf', size=30)
+    font_50 = ImageFont.truetype('insta_styles/DelaGothicOne-Regular.ttf', size=50)
+    font_85 = ImageFont.truetype('insta_styles/DelaGothicOne-Regular.ttf', size=85)
     
     season = data['season']
 
-    img = Image.open(f'{season}/insta/background.png')
+    img = Image.open(f'insta_styles/image_backgrounds/ayto_{season}.png')
     img_light_probs = Image.open(f'{season}/lights_tight/{tight_image_name}')
     
     # Replace white with transparency
@@ -682,8 +683,8 @@ def merge_reel_frames(data):
     num_core_images = 900
 
     # Laden des Hintergrundbildes
-    background = Image.open(f"{season}/insta/reel-background-{season}.png")
-    top_layer = Image.open(f"{season}/insta/reel-layer-{season}.png")
+    background = Image.open(f"insta_styles/reel_backgrounds/ayto_{season}.png")
+    top_layer = Image.open(f"insta_styles/reel_face_layers/ayto_{season}.png")
 
     # Anzahl der Core-Bilder
     # number of images in folder

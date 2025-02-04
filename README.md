@@ -20,7 +20,7 @@ This project uses data from the RTL show *"Are You The One?"* and various Python
 
 - **`ayto_data.json`**: Contains data for the AYTO seasons.
 - **`aytorakel.py`**: Main script for processing and visualizing match probabilities.
-- **`DelaGothicOne-Regular.ttf`**: Font used for generating images.
+- **`insta_styles/`**: Directory containing images and fonts for styling the instagrm posts.
 - **`requirements.txt`**: List of dependencies required for the project.
 - **`"seasons"/`**: Directory containing generated images and data for the season.
 
