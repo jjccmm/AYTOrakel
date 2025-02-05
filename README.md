@@ -23,6 +23,7 @@ This project uses data from the RTL show *"Are You The One?"* and various Python
 - **`insta_styles/`**: Directory containing images and fonts for styling the instagrm posts.
 - **`requirements.txt`**: List of dependencies required for the project.
 - **`"seasons"/`**: Directory containing generated images and data for the season.
+- **`explanation/`**: Directory containing images explaning the method for the predictions.
 
 
 
