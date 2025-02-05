@@ -673,7 +673,46 @@ def save_light_map(data, logs):
     plot.figure.savefig(f'{season}/{season}_light_history.png', dpi=300)
     fig.suptitle(f'')
     plt.subplots_adjust(left=0.01, bottom=0.01, right=0.99, top=0.99)
-    plot.figure.savefig(f'{season}/{season}_light_history_tight.png', dpi=300)
+    tight_image_name = f'{season}_light_history_tight.png'
+    plot.figure.savefig(f'{season}/{tight_image_name}', dpi=300)
+    save_insta_light_map(data, logs, tight_image_name)
+
+
+def save_insta_light_map(data, logs, tight_image_name):
+    font_18 = ImageFont.truetype('insta_styles/DelaGothicOne-Regular.ttf', size=18)
+    font_30 = ImageFont.truetype('insta_styles/DelaGothicOne-Regular.ttf', size=30)
+    font_50 = ImageFont.truetype('insta_styles/DelaGothicOne-Regular.ttf', size=50)
+    font_85 = ImageFont.truetype('insta_styles/DelaGothicOne-Regular.ttf', size=85)
+
+    season = data['season']
+    
+    img = Image.open(f'insta_styles/image_backgrounds/ayto_{season}.png')
+    img_light_map = Image.open('{season}/{tight_image_name}')
+    img_light_map.thumbnail((810, 891), Image.LANCZOS)
+
+    ayto='AYTO S4 VIP'
+    event='Zusammenfassung'
+    aytorakel = '@AYTOrakel'
+
+    d = ImageDraw.Draw(img)
+    d.text((img.width/2, 60), ayto, fill='white', font=font_85, stroke_width=7, stroke_fill='black', anchor='mm')
+    d.text((img.width/2, 155), event, fill='red', font=font_85, stroke_width=7, stroke_fill='black', anchor='mm')
+    d.text((img.width/2, 260), 'Wahrscheinlichkeiten für Lichter', fill='white', font=font_50, stroke_width=7, stroke_fill='black', anchor='mm')
+    d.text((10, img.height-30), aytorakel, fill='white', font=font_18, stroke_width=2, stroke_fill='black', anchor='la')
+    d.text((img.width/2, 1280), 'Woche', fill='white', font=font_50, stroke_width=7, stroke_fill='black', anchor='mm')
+    d.text((78, 330), 'Lichter', fill='yellow', font=font_30, stroke_width=2, stroke_fill='black', anchor='mm')
+
+    for i in range(1,11):
+        color='white'
+        d.text((122+79*i, 1230), f'{i}', fill=color, font=font_30, stroke_width=7, stroke_fill='black', anchor='mm')
+        
+    for i in range(11):
+        start= 1160
+        step = 79
+        d.text((115, start-i*step), f'{i}', fill='yellow', font=font_30, stroke_width=7, stroke_fill='black', anchor='mm')
+
+    img.paste(img_light_map, (150, 320), img_light_map)
+    img.save(f'{season}/insta/{season}_{11}_{0}_insta_summary.png')
 
 
 def merge_reel_frames(data):
