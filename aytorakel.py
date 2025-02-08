@@ -14,8 +14,8 @@ import shutil
 
 
 def main():
-    season = 's1'
-    save_reel = True
+    season = 's6'
+    save_reel = False
     
     data = read_season_data(season=season)
     create_folders(season)
@@ -488,7 +488,7 @@ def generate_all_possible_matches(data):
     gom = data['group_of_more']
 
     # Calculate how many options for multi matches exists
-    multi_match_count = calculate_multi_match_count(len(gom), data['multi_match_size'])
+    multi_match_count = calculate_multi_match_count(len(gom), data['multi_match_size']) 
     # With no multi matches the total amount of combinations is 10!
     # With Multi matches we have to multiply that by the options we have for multi matches
     total_combinations = int(multi_match_count * math.factorial(len(got)))
@@ -505,7 +505,7 @@ def generate_all_possible_matches(data):
     for multi_match in itertools.combinations(gom, data['multi_match_size']):
         if data['known_multi_match_member'] not in multi_match:
             continue
-
+        
         # Get the Indexes of the remaining members of the group of more (i.e. which are not in the multi match)
         remaining_gom_idx = [[gom.index(gom_member)] for gom_member in gom if gom_member not in multi_match]
         # Get the index array if the multi match members
@@ -687,7 +687,7 @@ def save_insta_light_map(data, logs, tight_image_name):
     season = data['season']
     
     img = Image.open(f'insta_styles/image_backgrounds/ayto_{season}.png')
-    img_light_map = Image.open('{season}/{tight_image_name}')
+    img_light_map = Image.open(f'{season}/{tight_image_name}')
     img_light_map.thumbnail((810, 891), Image.LANCZOS)
 
     ayto='AYTO S4 VIP'

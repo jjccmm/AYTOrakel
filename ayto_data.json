@@ -466,12 +466,8 @@
     ]
   },
   "s4": {
-    "group_of_ten": [
-      "Vanessa", "Carina", "Henna", "Juliette", "Larissa", "Aurelia", "Valeria", "Dorna", "Steffi", "Caro"
-    ],
-    "group_of_more": [
-      "Sasa", "Deniz", "Marwin", "Kenneth", "Barkin", "Pascal", "Burim", "Joel", "Cris", "Max", "Ken"
-    ],
+    "group_of_ten": ["Vanessa", "Carina", "Henna", "Juliette", "Larissa", "Aurelia", "Valeria", "Dorna", "Steffi", "Caro"],
+    "group_of_more": ["Sasa", "Deniz", "Marwin", "Kenneth", "Barkin", "Pascal", "Burim", "Joel", "Cris", "Max", "Ken"],
     "multi_match_size": 2,
     "known_multi_match_member": "Ken",
     "weeks": [
@@ -593,17 +589,21 @@
         "number": 7,
         "events": [
           {"type": "box", "couple": ["Lukas", "Jennifer"], "match": "no", "multi_match": []},
-          { "type": "night", "lights": 6, "matching": ["Gabriela", "Asena", "Emmy", "Tara", "LauraL", "Dana", "LauraM", "Nadja", "Anastasia", "Linda"]}
+          {"type": "night", "lights": 6, "matching": ["Gabriela", "Asena", "Emmy", "Tara", "LauraL", "Dana", "LauraM", "Nadja", "Anastasia", "Linda"]}
         ]
       },
       {
         "number": 8,
         "events": [
+          {"type": "box", "couple": ["Tim", "Linda"], "match": "yes", "multi_match": ["Dana"]},
+          {"type": "night", "lights": 7, "matching": ["Gabriela", "Asena", "Emmy", "Jennifer", "LauraL", "Tara", "LauraM", "Nadja", "Anastasia", "Linda"]}
         ]
       },
       {
         "number": 9,
         "events": [
+          {"type": "box", "couple": ["Lars", "LauraL"], "match": "no", "multi_match": []},
+          {"type": "night", "lights": 10, "matching": ["Gabriela", "Asena", "Emmy", "Nadja", "Jennifer", "Tara", "LauraM", "LauraL", "Anastasia", "Linda"]}
         ]
       }
     ]
@@ -683,6 +683,20 @@
         "events": [
           {"type": "box", "couple": ["Kevin", "Lina"], "match": "yes", "multi_match": []},
           {"type": "night", "lights": 7, "matching": ["Maja", "Tais", "Lina", "Afra", "Edda", "Lisa-Marie", "Jana", "Julia", "Sina", "Shelly"]}
+        ]
+      }
+    ]
+  },
+  "s6": {
+    "group_of_ten": ["Danish", "Dino", "Dion", "Enes", "Josh", "Joshua", "Kaan", "Levin", "Sinan", "Tano"],
+    "group_of_more": ["Anna", "Camelia", "Chiara", "Deisy", "Ina", "Joanna", "Nadja", "Nasti", "Selina", "Sophia", "Tori"],
+    "multi_match_size": 2,
+    "known_multi_match_member": "Tori",
+    "weeks": [
+      {
+        "number": 1,
+        "events": [
+          
         ]
       }
     ]
