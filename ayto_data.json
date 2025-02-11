@@ -696,7 +696,8 @@
       {
         "number": 1,
         "events": [
-          
+          {"type": "box", "couple": ["Josh", "Anna"], "match": "no", "multi_match": []},
+          {"type": "night", "lights": 2, "matching": ["Sophia", "Deisy", "Tori", "Anna", "Nadja", "Selina", "Joanna", "Camelia", "Ina", "Chiara"]}
         ]
       }
     ]
