@@ -699,6 +699,20 @@
           {"type": "box", "couple": ["Josh", "Anna"], "match": "no", "multi_match": []},
           {"type": "night", "lights": 2, "matching": ["Sophia", "Deisy", "Tori", "Anna", "Nadja", "Selina", "Joanna", "Camelia", "Ina", "Chiara"]}
         ]
+      },
+      {
+        "number": 2,
+        "events": [
+          {"type": "box", "couple": ["Levin", "Camelia"], "match": "sold", "multi_match": []},
+          {"type": "night", "lights": 3, "matching": ["Camelia", "Deisy", "Selina", "Nasti", "Nadja", "Joanna", "Anna", "Chiara", "Ina", "Tori"]}
+        ]
+      },
+      {
+        "number": 3,
+        "events": [
+          {"type": "box", "couple": ["Sinan", "Ina"], "match": "no", "multi_match": []},
+          {"type": "night", "lights": 4, "matching": ["Sophia", "Deisy", "Chiara", "Selina", "Nadja", "Joanna", "Anna", "Camelia", "Nasti", "Tori"]}
+        ]
       }
     ]
   }
