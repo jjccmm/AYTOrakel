@@ -7,8 +7,9 @@
 | Probabilities for the Light Count before the 1st Matching Night |  Matching Probabilites after the 3rd Matching Night |
 
 ## 📱 Follow @AYTOrakel on Instagram
-The predictions are updated after each episode on Instagram.
-[Follow AYTOrakel on Instagram](https://www.instagram.com/AYTOrakel) to stay up to date and join the discussions. 
+The predictions are updated after each episode on Instagram. \
+[Follow AYTOrakel on Instagram](https://www.instagram.com/AYTOrakel) to stay up to date and join the discussions. \
+[Check out the AYTO-Strategies Repo on Github](https://github.com/jjccmm/AYTO-Strategies) to learn about the best ways to solve AYTO. 
 
 
 ## 🙏 Acknowledgements
