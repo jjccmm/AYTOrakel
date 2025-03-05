@@ -471,15 +471,21 @@ def read_season_data(season: str) -> dict:
     return season_data
 
 
-def calculate_multi_match_count(group_size: int, multi_match_size: int) -> int:
+def calculate_multi_match_count(group_size: int, multi_match_size: int, known_multi_match_member: str) -> int:
     # Calculates how many multi matches are possible
     # Assuming one member of the multi match is known
     # Is calculated with n over k with
     # n: size of the group of possible multi match people
     # k: size of the subgroup required to complete the multi match
-
-    n = group_size - 1  # As one multi match member is known
-    k = multi_match_size - 1  # As one multi match member is known
+    
+    if known_multi_match_member == "":
+        known_mmm_count = 0
+    else: 
+        # One multi match member is known
+        known_mmm_count = 1
+    
+    n = group_size - known_mmm_count 
+    k = multi_match_size - known_mmm_count 
     return math.factorial(n) // (math.factorial(k) * math.factorial(n - k))
 
 
@@ -488,7 +494,7 @@ def generate_all_possible_matches(data):
     gom = data['group_of_more']
 
     # Calculate how many options for multi matches exists
-    multi_match_count = calculate_multi_match_count(len(gom), data['multi_match_size']) 
+    multi_match_count = calculate_multi_match_count(len(gom), data['multi_match_size'], data['known_multi_match_member']) 
     # With no multi matches the total amount of combinations is 10!
     # With Multi matches we have to multiply that by the options we have for multi matches
     total_combinations = int(multi_match_count * math.factorial(len(got)))
@@ -503,8 +509,10 @@ def generate_all_possible_matches(data):
     # The combinations are generated in batches for each possible multi match
     completed_mm = 0
     for multi_match in itertools.combinations(gom, data['multi_match_size']):
-        if data['known_multi_match_member'] not in multi_match:
-            continue
+        if data['known_multi_match_member'] != "":
+            # If we have the name of one multi match member, we need to ensure that that person in in the generated multi match
+            if data['known_multi_match_member'] not in multi_match:
+                continue
         
         # Get the Indexes of the remaining members of the group of more (i.e. which are not in the multi match)
         remaining_gom_idx = [[gom.index(gom_member)] for gom_member in gom if gom_member not in multi_match]

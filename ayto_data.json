@@ -691,7 +691,7 @@
     "group_of_ten": ["Danish", "Dino", "Dion", "Enes", "Josh", "Joshua", "Kaan", "Levin", "Sinan", "Tano"],
     "group_of_more": ["Anna", "Camelia", "Chiara", "Deisy", "Ina", "Joanna", "Nadja", "Nasti", "Selina", "Sophia", "Tori"],
     "multi_match_size": 2,
-    "known_multi_match_member": "Tori",
+    "known_multi_match_member": "",
     "weeks": [
       {
         "number": 1,
