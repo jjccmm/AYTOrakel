@@ -6,6 +6,8 @@
 |:----------------------:|:----------------------:|
 | Probabilities for the Light Count before the 1st Matching Night |  Matching Probabilites after the 3rd Matching Night |
 
+*Note: To be a bit more precise, the calculated probabilities state the probability that participant X wins with participant Y in the final matching night (for that, they need to be a perfect match). But, e.g., with a double match, the probability for each member is 50:50 to be selected in the final night.*
+
 ## 📱 Follow @AYTOrakel on Instagram
 The predictions are updated after each episode on Instagram. \
 [Follow AYTOrakel on Instagram](https://www.instagram.com/AYTOrakel) to stay up to date and join the discussions. \
