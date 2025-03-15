@@ -720,6 +720,13 @@
           {"type": "box", "couple": ["Danish", "Nadja"], "match": "yes", "multi_match": []},
           {"type": "night", "lights": 4, "matching": ["Nadja", "Deisy", "Nasti", "Selina", "Ina", "Joanna", "Anna", "Camelia", "Sophia", "Tori"]}
         ]
+      },
+      {
+        "number": 5,
+        "events": [
+          {"type": "box", "couple": ["Dino", "Deisy"], "match": "yes", "multi_match": []},
+          {"type": "night", "lights": 4, "matching": ["Nadja", "Deisy", "Chiara", "Selina", "Ina", "Joanna", "Sophia", "Camelia", "Nasti", "Tori"]}
+        ]
       }
     ]
   }
