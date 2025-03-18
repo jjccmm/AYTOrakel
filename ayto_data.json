@@ -727,6 +727,13 @@
           {"type": "box", "couple": ["Dino", "Deisy"], "match": "yes", "multi_match": []},
           {"type": "night", "lights": 4, "matching": ["Nadja", "Deisy", "Chiara", "Selina", "Ina", "Joanna", "Sophia", "Camelia", "Nasti", "Tori"]}
         ]
+      },
+      {
+        "number": 6,
+        "events": [
+          {"type": "box", "couple": ["Tano", "Tori"], "match": "sold", "multi_match": []},
+          {"type": "night", "lights": 5, "matching": ["Nadja", "Deisy", "Anna", "Selina", "Nasti", "Ina", "Sophia", "Chiara", "Camelia", "Tori"]}
+        ]
       }
     ]
   }
