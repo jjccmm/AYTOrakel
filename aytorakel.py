@@ -80,10 +80,13 @@ def main():
                 save_reel_frames(data, logs, match_probabilities, new_match_probabilities, event)
             match_probabilities = new_match_probabilities
             save_match_probabilities(data, logs, match_probabilities, event_number, event_name, len(df))
+            if len(df) < 40:
+                save_insta_combinations(data, df, event_number)
+                
 
     save_light_map(data, logs)
 
-    if len(df) < 100:
+    if len(df) < 500:
         df.to_csv(f'{season}/remaining_combinations_dm.csv', index=False)
     
     if save_reel:
@@ -773,6 +776,62 @@ def merge_reel_frames(data):
 
     ffmpeg_command = fr"C:\ffmpeg\bin\ffmpeg.exe -framerate 30 -i C:\Users\User\Code\AYTOrakel\{season}\reel_frames\frame_%d.png -c:v libx264 -r 30 -pix_fmt yuv420p C:\Users\User\Code\AYTOrakel\{season}\insta\{season}_summary_reel.mp4"
     subprocess.run(ffmpeg_command, shell=True)
+
+
+def save_insta_combinations(data, df, event_number):
+    season = data['season']
+    got = data['group_of_ten']
+    gom = data['group_of_more']
+    
+    colors = {0: '#FFC0CB', 1: '#FF8000', 2: '#FFFF00', 3: '#80FF00', 4: '#00FF00', 5: '#00FF80', 6: '#00FFFF', 7: '#0080FF', 8: '#FF6FFF', 9: '#C291A4', 10: '#FF00FF', 11: '#FF9A8A'}
+
+    img = Image.open(f'insta_styles/image_backgrounds/ayto_{season}.png')
+    font_10 = ImageFont.truetype('insta_styles/DelaGothicOne-Regular.ttf', size=10)
+    font_18 = ImageFont.truetype('insta_styles/DelaGothicOne-Regular.ttf', size=18)
+    font_30 = ImageFont.truetype('insta_styles/DelaGothicOne-Regular.ttf', size=30)
+    font_85 = ImageFont.truetype('insta_styles/DelaGothicOne-Regular.ttf', size=85)
+    
+    season_number = season.replace('vip','').replace('s','')
+    season_vip = 'VIP' if 'vip' in season else ''
+    week_number = event_number.split('-')[0]
+    event_number = event_number.split('-')[1]
+    ayto=f'AYTO S{season_number} {season_vip} W{week_number}'
+    event=f'Matching Night'
+    combinations=f'Verbleibende Kombinationen'
+    aytorakel = '@AYTOrakel'
+    
+    d = ImageDraw.Draw(img)
+    d.text((img.width/2, 60), ayto, fill='white', font=font_85, stroke_width=7, stroke_fill='black', anchor='mm')
+    d.text((img.width/2, 155), event, fill='red', font=font_85, stroke_width=7, stroke_fill='black', anchor='mm')
+    d.text((img.width/2, 240), combinations, fill='white', font=font_30, stroke_width=7, stroke_fill='black', anchor='mm')
+    d.text((10, img.height-30), aytorakel, fill='white', font=font_18, stroke_width=2, stroke_fill='black', anchor='la')
+
+
+    for i, name in enumerate(got):
+        d.text((90+i*(img.width/11), 290), name, fill='red', font=font_18, stroke_width=2, stroke_fill='black', anchor='mm')
+
+    df_no_duplicates = df.drop_duplicates(subset='id', keep='first')
+    df_no_duplicates.reset_index(drop=True, inplace=True)
+    for j, row in df_no_duplicates.iterrows():
+        for i, name in enumerate(got):
+            gom_index = row[name]
+            gom_name = gom[gom_index]
+            gom_name_2 = None
+            if gom_index == row['mm1']:
+                gom_index_2 = row['mm2']
+                gom_name_2 = gom[gom_index_2]
+            elif gom_index == row['mm2']:
+                gom_index_2 = row['mm1']
+                gom_name_2 = gom[gom_index_2]
+                
+            if gom_name_2:
+                d.text((90+i*(img.width/11), 330+j*40-6), gom_name, fill=colors[gom_index], font=font_10, stroke_width=2, stroke_fill='black', anchor='mm')
+                d.text((90+i*(img.width/11), 330+j*40+6), gom_name_2, fill=colors[gom_index_2], font=font_10, stroke_width=2, stroke_fill='black', anchor='mm')
+
+            else: 
+                d.text((90+i*(img.width/11), 330+j*40), gom_name, fill=colors[gom_index], font=font_18, stroke_width=2, stroke_fill='black', anchor='mm')
+
+    img.save(f'{season}/insta/{season}_{week_number}_{event_number}_insta_remaining.png')
 
 
 if __name__ == '__main__':
