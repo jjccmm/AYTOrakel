@@ -741,6 +741,13 @@
           {"type": "box", "couple": ["Kaan", "Sophia"], "match": "no", "multi_match": []},
           {"type": "night", "lights": 6, "matching": ["Nadja", "Deisy", "Tori", "Sophia", "Camelia", "Joanna", "Selina", "Chiara", "Nasti", "Anna"]}
         ]
+      },
+      {
+        "number": 8,
+        "events": [
+          {"type": "box", "couple": ["Joshua", "Joanna"], "match": "no", "multi_match": []},
+          {"type": "night", "lights": 5, "matching": ["Nadja", "Deisy", "Chiara", "Sophia", "Camelia", "Anna", "Selina", "Ina", "Nasti", "Joanna"]}
+        ]
       }
     ]
   }
