@@ -749,6 +749,14 @@
           {"type": "night", "lights": 5, "matching": ["Nadja", "Deisy", "Chiara", "Sophia", "Camelia", "Anna", "Selina", "Ina", "Nasti", "Joanna"]}
         ]
       }
+      ,
+      {
+        "number": 9,
+        "events": [
+          {"type": "box", "couple": ["Sinan", "Nasti"], "match": "yes", "multi_match": []},
+          {"type": "night", "lights": 7, "matching": ["Nadja", "Deisy", "Sophia", "Ina", "Camelia", "Tori", "Anna", "Chiara", "Nasti", "Joanna"]}
+        ]
+      }
     ]
   }
 }
