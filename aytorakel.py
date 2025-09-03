@@ -14,7 +14,7 @@ import shutil
 
 
 def main():
-    season = 's6'
+    season = 's5vip'
     save_reel = False
     
     data = read_season_data(season=season)
