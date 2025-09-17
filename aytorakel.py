@@ -16,10 +16,21 @@ import shutil
 def main():
     season = 's5vip'
     save_reel = False
+    load_from_file = True
+    save_to_file = False
     
     data = read_season_data(season=season)
     create_folders(season)
-    df = generate_all_possible_matches(data)
+    if load_from_file and os.path.isfile(f'{season}/remaining_combinations_dm.csv'):
+        print('Loading remaining combinations from file...')
+        df = pd.read_csv(f'{season}/remaining_combinations_dm.csv')
+        for col in [col for col in df.columns if col != 'id']:
+            df[col] = df[col].astype('uint8')
+        df['id'] = df['id'].astype(np.uint32)
+        print(f'Loaded {len(df)} remaining combinations from file.')
+    else:
+        print('Generating all possible combinations...')
+        df = generate_all_possible_matches(data)
 
     logs = {'light_map': np.zeros((11, 10)),
             'light_history': [],
@@ -86,7 +97,7 @@ def main():
 
     save_light_map(data, logs)
 
-    if len(df) < 500:
+    if save_to_file and len(df) < 200_000:
         df.to_csv(f'{season}/remaining_combinations_dm.csv', index=False)
     
     if save_reel:
@@ -440,6 +451,8 @@ def save_insta_probabilities(data, tight_image_name, event_number, event_name, r
         event=f'Matching Night'
     elif 'Einzug' in event_name:
         event='Einzug'
+    elif 'new_person' in event_name:
+        event='Nachkommer'
     combinations=f'Mögliche Kombinationen:  {remaining_combinations:,}'.replace(',','.')
     aytorakel = '@AYTOrakel'
     
