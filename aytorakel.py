@@ -43,7 +43,8 @@ def main():
             'match_box_count': 0,
             'match_night_count': 0,
             'week_with_perfect_match': [],
-            'frame_index': 0}
+            'frame_index': 0,
+            'new_person_count': 0}
     
     # Initialize Match Probabilities
     # Start with all 0 just for visualisation
@@ -63,13 +64,13 @@ def main():
         for event_number, event in enumerate(week['events'], start=1):
             event_name = f'Week {week_number}, Event {event_number},  Type {event["type"]}'
             event_number = f'{week_number}-{event_number}'
-
             if event['type'] == 'night':
                 df = update_after_night_event(data, logs, df, event, event_number)
-
             elif event['type'] == 'box':
                 df = update_after_box_event(data, logs, df, event, week_number)
-
+            elif event['type'] == 'new_person':
+                df = update_after_new_person_event(data, logs, df, event, week_number)
+                
             possible_matches = df[data['group_of_ten']].to_numpy().astype(np.uint8)
             remaining_possibilities = len(possible_matches)
             print(f'Possible combinations after Week {week_number} Event {event_number}: {remaining_possibilities}')
@@ -159,7 +160,7 @@ def update_after_box_event(data, logs, df, event, week_number):
     # Create matching vector for match box pair
     box_match = np.full(len(got), -1)
     box_match[got_idx] = gom_idx
-
+    
     # Check for which of the possibilities this is a match
     possible_matches = df[got].to_numpy().astype(np.uint8)
     matching_elements_count = np.sum(possible_matches == box_match, axis=1)
@@ -184,7 +185,15 @@ def update_after_box_event(data, logs, df, event, week_number):
             # Compare to the multi match index of the possibilities and only keep when equal
             multi_match_columns = [f'mm{i + 1}' for i in range(data['multi_match_size'])]
             multi_match_mask = df[multi_match_columns].apply(lambda row: sorted(row) == multi_match_index, axis=1)
-            df = df[multi_match_mask]
+
+            if sum(multi_match_mask) > 0:
+                # We found the multi match in the remaining possibilities
+                df = df[multi_match_mask]
+            else:
+                # The found multi match is the new multi match that was added later with the new person event     
+                multi_match_columns = [f'new_mm{i + 1}' for i in range(2)]
+                multi_match_mask = df[multi_match_columns].apply(lambda row: sorted(row) == multi_match_index, axis=1)
+                df = df[multi_match_mask]
 
             # All members of the multi match array end with no match and no money
             # We can delete all possibilities where they still occur in the matching night
@@ -269,6 +278,78 @@ def update_after_night_event(data, logs, df, event, event_number):
 
     return df
 
+
+def update_after_new_person_event(data, logs, df, event, week_number):
+    data['group_of_more'].append(event['person'])
+    gom = data['group_of_more']
+    logs['new_person_count'] += 1
+    
+    if event['multi_match'] == 'new':
+        gom_index_map = {member: i for i, member in enumerate(gom)}
+        new_idx = gom_index_map[event['person']]
+        
+        updated_combinations = []
+        next_id = 0  # To assign new unique IDs to the new combinations
+        # Generate only pairs that include the new person
+        for new_multi_match in itertools.combinations(gom, 2):
+            if event['person'] not in new_multi_match:
+                continue
+            # Remove multimatches whith members who already found the match 
+            if 'Xander' in new_multi_match:
+                # TODO make this dynamic based on confirmed matches
+                continue
+            
+            new_multi_match_idx = [gom_index_map[m] for m in new_multi_match]
+
+            # Mask: keep only rows where mm1 and mm2 are not in new_multi_match_idx
+            mask = ~df[['mm1', 'mm2']].isin(new_multi_match_idx).any(axis=1)
+            valid_rows = df.loc[mask]   
+            
+            n_rows = len(valid_rows)
+            # IDs neu erzeugen: 0,0,1,1,2,2, ...
+            new_ids = np.repeat(np.arange(next_id, next_id + n_rows // 2), 2)
+            # Counter für nächste Runde updaten
+            next_id += n_rows // 2
+            
+            # --- Case 1: new person gets no match ---
+            case1 = valid_rows.assign(
+                new_mm1=new_multi_match_idx[0],
+                new_mm2=new_multi_match_idx[1],
+                id=new_ids
+            )
+            updated_combinations.append(case1)
+
+            # --- Case 2: new person replaces one match ---
+            second_idx = new_multi_match_idx[0] if new_multi_match_idx[0] != new_idx else new_multi_match_idx[1]
+
+            got_cols = data['group_of_ten']
+
+            # Mask to find entries of second_idx
+            mask_any = (valid_rows[got_cols] == second_idx).any(axis=1)
+
+            if mask_any.any():
+                case2 = valid_rows.loc[mask_any].copy()
+
+                # The new person gets the match and the other part of the multi match not
+                case2[got_cols] = case2[got_cols].replace(second_idx, new_idx)
+
+                case2 = case2.assign(
+                    new_mm1=new_multi_match_idx[0],
+                    new_mm2=new_multi_match_idx[1],
+                    id=new_ids
+                )
+
+                updated_combinations.append(case2)
+            else:
+                print('This should not happen - no entries found for replacement!')
+
+        # Concatenate all results at once (much faster than appending row by row)
+        df = pd.concat(updated_combinations, ignore_index=True)
+        
+        # the log  'nights_together': needs an new row of ones for the new person 
+        logs['nights_together'] = np.vstack([ logs['nights_together'], np.zeros((1,  logs['nights_together'].shape[1]), dtype=np.int8)])
+        return df
+        
 
 def create_folders(season):
     season_root = os.path.join(os.getcwd(), season)
@@ -421,18 +502,20 @@ def save_match_probabilities(data, logs, match_probabilities, event_number, even
     tight_image_name = f'{season}_{event_number}_ayto_match_probabilities_{event_name}_tight.png'
     plot.figure.savefig(f'{season}/matches_tight/{tight_image_name}', dpi=300)
     plt.close()
-    save_insta_probabilities(data, tight_image_name, event_number, event_name, remaining_combinations)
+    save_insta_probabilities(data, logs, tight_image_name, event_number, event_name, remaining_combinations)
 
 
-def save_insta_probabilities(data, tight_image_name, event_number, event_name, remaining_combinations):
+def save_insta_probabilities(data, logs, tight_image_name, event_number, event_name, remaining_combinations):
     font_18 = ImageFont.truetype('insta_styles/DelaGothicOne-Regular.ttf', size=18)
     font_30 = ImageFont.truetype('insta_styles/DelaGothicOne-Regular.ttf', size=30)
     font_85 = ImageFont.truetype('insta_styles/DelaGothicOne-Regular.ttf', size=85)
     
     season = data['season']
     img = Image.open(f'insta_styles/image_backgrounds/ayto_{season}.png')
-    face_layer = Image.open(f'insta_styles/image_face_layers/ayto_{season}.png')
-    
+    if logs['new_person_count'] == 0:
+        face_layer = Image.open(f'insta_styles/image_face_layers/ayto_{season}.png')
+    else:
+        face_layer = Image.open(f'insta_styles/image_face_layers/ayto_{season}_{logs["new_person_count"]}.png')
     img_match_probs = Image.open(f'{season}/matches_tight/{tight_image_name}')
     img_match_probs.thumbnail((810, 891), Image.LANCZOS)
     frame = 7
