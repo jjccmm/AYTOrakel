@@ -92,8 +92,13 @@ def main():
                 save_reel_frames(data, logs, match_probabilities, new_match_probabilities, event)
             match_probabilities = new_match_probabilities
             save_match_probabilities(data, logs, match_probabilities, event_number, event_name, len(df))
+            
+            determine_multi_match(data, logs, df)
+            
             if len(df) < 40:
                 save_insta_combinations(data, df, event_number)
+                
+            
                 
 
     save_light_map(data, logs)
@@ -933,6 +938,32 @@ def save_insta_combinations(data, df, event_number):
 
     img.save(f'{season}/insta/{season}_{week_number}_{event_number}_insta_remaining.png')
 
+
+def determine_multi_match(data, logs, df):
+    
+    gom_index_map = {i: member for i, member in enumerate(data['group_of_more'])}
+    def map_pair(pair):
+        return tuple(gom_index_map[n] for n in pair)
+
+    
+    pair_counts_mm = df[['mm1', 'mm2']].apply(lambda x: tuple(sorted(x)), axis=1).value_counts(normalize = True) * 100
+    print("\nHäufigkeit der Paare in mm:")
+    print(pair_counts_mm.rename(index=map_pair).round(2))    
+    
+    count_numbers_mm = pd.concat([df['mm1'], df['mm2']]).value_counts(normalize=True) * 100 * 2
+    print("\nHäufigkeit der Zahlen in mm:")
+    print(count_numbers_mm.rename(index=gom_index_map).round(2))
+    
+        
+    if logs['new_person_count'] > 0:
+        pair_counts_mm = df[['new_mm1', 'new_mm2']].apply(lambda x: tuple(sorted(x)), axis=1).value_counts(normalize = True) * 100
+        print("\nHäufigkeit der Paare in new_mm:")
+        print(pair_counts_mm.rename(index=map_pair).round(2))    
+        
+        count_numbers_mm = pd.concat([df['new_mm1'], df['new_mm2']]).value_counts(normalize=True) * 100 * 2
+        print("\nHäufigkeit der Zahlen in new_mm:")
+        print(count_numbers_mm.rename(index=gom_index_map).round(2))
+    
 
 if __name__ == '__main__':
     main()
