@@ -729,6 +729,14 @@
         {"type": "box", "couple": ["Nelly", "Jimi"], "match": "no", "multi_match": []},
         {"type": "night", "lights": 4, "matching": ["Oliver", "Nico", "Sidar", "Xander", "Rob", "Jimi", "CalvinB", "CalvinH", "Lennert", "Kevin"]}
       ]
+    },
+    { 
+      "number": 6,
+      "events": [
+        {"type": "box", "couple": ["Sandra", "Lennert"], "match": "yes", "multi_match": []},
+        {"type": "night", "lights": 4, "matching": ["CalvinB", "Kevin", "Leandro", "Xander", "Jimi", "Oliver", "Sidar", "CalvinH", "Lennert", "Jonny"]},
+        {"type": "box", "couple": ["Antonia", "Oliver"], "match": "no", "multi_match": []}
+      ]
     }]
   },
   "s6": {

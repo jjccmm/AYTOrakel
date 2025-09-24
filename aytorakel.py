@@ -208,6 +208,10 @@ def update_after_box_event(data, logs, df, event, week_number):
             # Therefore we can delete all possibilities where a member ob the perfect match is in the multi match
             for i in range(data['multi_match_size']):
                 df = df[df[f'mm{i + 1}'] != gom_idx]
+                
+            if logs['new_person_count'] > 0:
+                for i in range(2):
+                    df = df[df[f'new_mm{i + 1}'] != gom_idx]
 
     else:
         # When it is a no Match: keep only the ids that dont match
