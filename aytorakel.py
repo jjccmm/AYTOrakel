@@ -16,10 +16,10 @@ import shutil
 def main():
     season = 's5vip'
     save_reel = False
-    load_from_file = True
+    load_from_file = False
     save_to_file = False
     
-    data = read_season_data(season=season)
+    data = read_season_data(season=season) 
     create_folders(season)
     if load_from_file and os.path.isfile(f'{season}/remaining_combinations_dm.csv'):
         print('Loading remaining combinations from file...')
@@ -70,6 +70,10 @@ def main():
                 df = update_after_box_event(data, logs, df, event, week_number)
             elif event['type'] == 'new_person':
                 df = update_after_new_person_event(data, logs, df, event, week_number)
+            elif event['type'] == 'remove_person':
+                df = update_after_remove_person_event(data, logs, df, event, week_number)
+            elif event['type'] == 'solution':
+                df = update_after_solution_event(data, logs, df, event, week_number)
                 
             possible_matches = df[data['group_of_ten']].to_numpy().astype(np.uint8)
             remaining_possibilities = len(possible_matches)
@@ -93,9 +97,10 @@ def main():
             match_probabilities = new_match_probabilities
             save_match_probabilities(data, logs, match_probabilities, event_number, event_name, len(df))
             
-            determine_multi_match(data, logs, df)
+            if len(df) < 1_000:
+                determine_multi_match(data, logs, df)
             
-            if len(df) < 40:
+            if len(df) < 300:
                 save_insta_combinations(data, df, event_number)
                 
             
@@ -103,7 +108,7 @@ def main():
 
     save_light_map(data, logs)
 
-    if save_to_file and len(df) < 200_000:
+    if save_to_file and len(df) < 20_000:
         df.to_csv(f'{season}/remaining_combinations_dm.csv', index=False)
     
     if save_reel:
@@ -360,11 +365,61 @@ def update_after_new_person_event(data, logs, df, event, week_number):
         return df
         
 
+def update_after_remove_person_event(data, logs, df, event, week_number):
+    """
+    One single person of the group of more is removed from the show without revealing their match.
+    This happed so far only to Jimi in Season 5 VIP. He was also part of the mulit match. 
+    All possibilities where he is part of the mathching night can now be removed.
+    """
+    got = data['group_of_ten']
+    gom = data['group_of_more']
+    removed_person = event['person']
+    removed_person_idx = gom.index(removed_person)
+    # Remove all rows from df, where the removed_person_idx occurs in the coloumns of the group of ten
+    df = df[~df[got].isin([removed_person_idx]).any(axis=1)]
+    return df 
+
+
+def update_after_solution_event(data, logs, df, event, week_number):
+    """
+    One single person of the group of more is removed from the show without revealing their match.
+    This happed so far only to Jimi in Season 5 VIP. He was also part of the mulit match. 
+    All possibilities where he is part of the mathching night can now be removed.
+    """
+    got = data['group_of_ten']
+    gom = data['group_of_more']
+        
+    solution = event['solution'] # [["Leandro"], ["CalvinB"], ["Nico", "Jimi"], ["Xander"], ["Sidar"], ["Oliver"], ["Rob", "Jonny"], ["CalvinH"], ["Lennert"], ["Kevin"]]
+    # convert solution to index based
+    
+    solution_idx = [[gom.index(name) for name in options] for options in solution]
+    print(solution_idx)
+    for got_index, solution_option in enumerate(solution_idx):
+        # Remove all rows from df, where the solution_option occurs in the coloumns of the group of ten
+        print(got_index, solution_option)
+        print(got[got_index])
+        df = df[df[got[got_index]].isin(solution_option)]
+        
+        if len(solution_option) == 2:
+            # Keep only the correct Multi Match
+            if 11 in solution_option:
+                df = df[df['new_mm1'] == solution_option[0]]
+                df = df[df['new_mm2'] == solution_option[1]]
+            else: 
+                df = df[df['mm1'] == solution_option[0]]
+                df = df[df['mm2'] == solution_option[1]]
+        print(f'Remaining combinations: {len(df)}')
+
+    return df 
+    
 def create_folders(season):
     season_root = os.path.join(os.getcwd(), season)
     for sub_folder in ['reel_raw', 'reel_frames', 'matches', 'matches_tight', 'lights', 'lights_tight', 'insta']:
         sub_folder_path = os.path.join(season_root, sub_folder)
         os.makedirs(sub_folder_path, exist_ok=True)
+
+
+
 
 
 def save_reel_frames(data, logs, match_probabilities, new_match_probabilities, event, event_frames=15, transition_frames=30):
@@ -480,7 +535,8 @@ def save_match_probabilities(data, logs, match_probabilities, event_number, even
     df_cm = pd.DataFrame(match_probabilities, index=gom, columns=got)
     fig = plt.figure(figsize=(len(got) * 0.6, len(gom) * 0.6))
     ax = fig.add_subplot(111)
-    plot = sn.heatmap(df_cm, annot=True, fmt='.0f', vmin=0, vmax=100, square=True, linewidth=.5, cbar=False,
+    annot_data = df_cm.apply(lambda col: col.map(custom_heatmap_annotation))
+    plot = sn.heatmap(df_cm, annot=annot_data, fmt='', vmin=0, vmax=100, square=True, linewidth=.5, cbar=False,
                       annot_kws={"size": 10}, ax=ax)
     plot.set_xticklabels(plot.get_xticklabels(), rotation=45, horizontalalignment='right')
     plot.set_yticklabels(plot.get_yticklabels(), rotation=45, verticalalignment='top')
@@ -498,10 +554,15 @@ def save_match_probabilities(data, logs, match_probabilities, event_number, even
 
     for boy, girl in enumerate(logs['night_matches']):
         ax.plot([boy, boy+1, boy+1, boy, boy], [girl, girl, girl+1, girl+1, girl], color='yellow', lw=1)
-
-    ax.scatter([x+0.85 for x in logs['confirmed_matches'][0]], [x+0.85 for x in logs['confirmed_matches'][1]], marker='P', s=70, color='green', edgecolor='black')
-    ax.scatter([x+0.85 for x in logs['confirmed_no_matches'][0]], [x+0.85 for x in logs['confirmed_no_matches'][1]], marker='X', s=80, color='red', edgecolor='black')
-    ax.scatter([x+0.85 for x in logs['sold_matches'][0]], [x+0.85 for x in logs['sold_matches'][1]], marker='d', s=60, color='lightblue', edgecolor='black')
+    style = 'big'
+    if style == 'big':
+        ax.scatter([x+0.85 for x in logs['confirmed_matches'][0]], [x+0.85 for x in logs['confirmed_matches'][1]], marker='P', s=70, color='green', edgecolor='black')
+        ax.scatter([x+0.5 for x in logs['confirmed_no_matches'][0]], [x+0.5 for x in logs['confirmed_no_matches'][1]], marker='X', s=400, color='red', edgecolor='black')
+        ax.scatter([x+0.85 for x in logs['sold_matches'][0]], [x+0.85 for x in logs['sold_matches'][1]], marker='d', s=60, color='lightblue', edgecolor='black')
+    else:
+        ax.scatter([x+0.85 for x in logs['confirmed_matches'][0]], [x+0.85 for x in logs['confirmed_matches'][1]], marker='P', s=70, color='green', edgecolor='black')
+        ax.scatter([x+0.85 for x in logs['confirmed_no_matches'][0]], [x+0.85 for x in logs['confirmed_no_matches'][1]], marker='X', s=80, color='red', edgecolor='black')
+        ax.scatter([x+0.85 for x in logs['sold_matches'][0]], [x+0.85 for x in logs['sold_matches'][1]], marker='d', s=60, color='lightblue', edgecolor='black')
 
     season = data['season']
 
@@ -545,6 +606,10 @@ def save_insta_probabilities(data, logs, tight_image_name, event_number, event_n
         event='Einzug'
     elif 'new_person' in event_name:
         event='Nachkommer'
+    elif 'remove_person' in event_name:
+        event='Ciao Jimi'
+    elif 'solution' in event_name:
+        event='Auflösung'
     combinations=f'Mögliche Kombinationen:  {remaining_combinations:,}'.replace(',','.')
     aytorakel = '@AYTOrakel'
     
@@ -666,29 +731,54 @@ def generate_all_possible_matches(data):
 
 
 def save_light_probabilities(data, logs, df, event_number, event):
+    light_probabilities = {}
     for light, prob in df[f'lights'].value_counts(normalize=True).items():
         logs['light_map'][10-light][logs['match_night_count']-1] = prob*100
+        light_probabilities[light] = prob
         print(f'{light}: {prob*100:.5f}')
 
     matching_goal = len(data['group_of_ten'])
+    
+    lights = list(range(0, matching_goal + 1))
+    probs = [light_probabilities.get(l, 0) for l in lights]
     fig = plt.figure(figsize=(11 * 0.6, 5 * 0.6))
-    plot = sn.histplot(df[f'lights'], bins=matching_goal + 1, binrange=(-0.5, matching_goal + 0.5), stat='probability',
-                       shrink=0.9, color='yellow', edgecolor='black')
-    plt.legend([], [], frameon=False)
+    plt.bar(lights, probs, edgecolor='black', color='yellow')
     plt.xlabel("Number of Lights")
+    plt.ylabel("Probability (%)")
+    plt.title("Distribution of Light Probabilities")
+    plt.xticks(lights)
     plt.ylim(0, 1)
     plt.axis('off')
-    plot.set_xticks(range(matching_goal + 1))
-    plot.set_xticklabels(range(matching_goal + 1))
+    plt.legend([], [], frameon=False)
     fig.suptitle(f'AYTO Light Probabilities in Week {logs["match_night_count"]}')
     plt.subplots_adjust(left=0.095, bottom=0.148, right=0.986, top=0.895)
     season = data['season']
-    plot.figure.savefig(f'{season}/lights/{season}_{logs["match_night_count"]}_ayto_light_probabilities.png', dpi=300)
+    fig.savefig(f'{season}/lights/{season}_{logs["match_night_count"]}_ayto_light_probabilities.png', dpi=300)
     plt.subplots_adjust(left=0.01, bottom=0.01, right=0.99, top=0.99)
     fig.suptitle(f'')
     tight_image_name = f'{season}_{logs["match_night_count"]}_ayto_light_probabilities_tight.png'
-    plot.figure.savefig(f'{season}/lights_tight/{tight_image_name}', dpi=300)
-    plt.close()
+    fig.savefig(f'{season}/lights_tight/{tight_image_name}', dpi=300)
+    plt.close(fig)
+    
+    
+    #fig = plt.figure(figsize=(11 * 0.6, 5 * 0.6))
+    #plot = sn.histplot(df[f'lights'], bins=matching_goal + 1, binrange=(-0.5, matching_goal + 0.5), stat='probability',
+    #                   shrink=0.9, color='yellow', edgecolor='black')
+    #plt.legend([], [], frameon=False)
+    #plt.xlabel("Number of Lights")
+    #plt.ylim(0, 1)
+    #plt.axis('off')
+    #plot.set_xticks(range(matching_goal + 1))
+    #plot.set_xticklabels(range(matching_goal + 1))
+    #fig.suptitle(f'AYTO Light Probabilities in Week {logs["match_night_count"]}')
+    #plt.subplots_adjust(left=0.095, bottom=0.148, right=0.986, top=0.895)
+    #season = data['season']
+    #plot.figure.savefig(f'{season}/lights/{season}_{logs["match_night_count"]}_ayto_light_probabilities.png', dpi=300)
+    #plt.subplots_adjust(left=0.01, bottom=0.01, right=0.99, top=0.99)
+    #fig.suptitle(f'')
+    #tight_image_name = f'{season}_{logs["match_night_count"]}_ayto_light_probabilities_tight.png'
+    #plot.figure.savefig(f'{season}/lights_tight/{tight_image_name}', dpi=300)
+    #plt.close()
     save_insta_light_probabilities(data, logs, tight_image_name, event_number, event['lights'], )
 
 
@@ -915,7 +1005,13 @@ def save_insta_combinations(data, df, event_number):
     for i, name in enumerate(got):
         d.text((90+i*(img.width/11), 290), name, fill='red', font=font_18, stroke_width=2, stroke_fill='black', anchor='mm')
 
-    df_no_duplicates = df.drop_duplicates(subset='id', keep='first')
+    # Quick hack to remove Jimi from combinations
+    removed_person = 'Jimi'
+    removed_person_idx = gom.index(removed_person)
+    df_no_duplicates = df[~df[got].isin([removed_person_idx]).any(axis=1)]
+    # Hack end
+    
+    df_no_duplicates = df_no_duplicates.drop_duplicates(subset='id', keep='first')
     df_no_duplicates.reset_index(drop=True, inplace=True)
     for j, row in df_no_duplicates.iterrows():
         for i, name in enumerate(got):
@@ -964,6 +1060,15 @@ def determine_multi_match(data, logs, df):
         print("\nHäufigkeit der Zahlen in new_mm:")
         print(count_numbers_mm.rename(index=gom_index_map).round(2))
     
+
+def custom_heatmap_annotation(v):
+    if v == 0:
+        return ''
+    elif v < 1:
+        return f'{v:.2f}'
+    else:
+        return f'{v:.0f}'
+
 
 if __name__ == '__main__':
     main()

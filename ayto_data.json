@@ -737,6 +737,40 @@
         {"type": "night", "lights": 4, "matching": ["CalvinB", "Kevin", "Leandro", "Xander", "Jimi", "Oliver", "Sidar", "CalvinH", "Lennert", "Jonny"]},
         {"type": "box", "couple": ["Antonia", "Oliver"], "match": "no", "multi_match": []}
       ]
+    },
+    { 
+      "number": 7,
+      "events": [
+        {"type": "box", "couple": ["Hati", "Jimi"], "match": "no", "multi_match": []},
+        {"type": "night", "lights": 5, "matching": ["CalvinB", "Leandro", "Nico", "Xander", "Jonny", "Oliver", "Sidar", "Rob", "Lennert", "Kevin"]}
+      ]
+    },
+    { 
+      "number": 8,
+      "events": [
+        {"type": "box", "couple": ["Henna", "Sidar"], "match": "no", "multi_match": []},
+        {"type": "night", "lights": 4, "matching": ["CalvinB", "Kevin", "Nico", "Xander", "Jonny", "Oliver", "CalvinH", "Rob", "Lennert", "Leandro"]}
+      ]
+    },
+    { 
+      "number": 9,
+      "events": [
+        {"type": "night", "lights": 4, "matching": ["Jonny", "Leandro", "Sidar", "Xander", "Kevin", "Oliver", "CalvinB", "CalvinH", "Lennert", "Rob"]},
+        {"type": "box", "couple": ["Nelly", "CalvinH"], "match": "yes", "multi_match": []}
+      ]
+    },
+    { 
+      "number": 10,
+      "events": [
+        {"type": "box", "couple": ["Joanna", "CalvinB"], "match": "no", "multi_match": []},
+        {"type": "night", "lights": 7, "matching": ["CalvinB", "Oliver", "Nico", "Xander", "Sidar", "Leandro", "Rob", "CalvinH", "Lennert", "Kevin"]}
+      ]
+    },
+    { 
+      "number": 11,
+      "events": [
+        {"type": "solution", "solution": [["Leandro"], ["CalvinB"], ["Nico", "Jimi"], ["Xander"], ["Sidar"], ["Oliver"], ["Jonny", "Rob"], ["CalvinH"], ["Lennert"], ["Kevin"]]}
+      ]
     }]
   },
   "s6": {
