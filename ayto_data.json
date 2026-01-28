@@ -851,5 +851,20 @@
         ]
       }
     ]
+  },
+  "s7": {
+    "group_of_ten": ["Chris", "Ema", "Evi", "Jeronymo", "Jerry", "Julian M.", "Julian S.", "Luke", "Meji", "Noel"],
+    "group_of_more": ["Adrianna", "Alicia", "Aurora", "Elena", "Ella", "Laura", "Linda", "Marla", "Michelle", "Tiziana", "Tonia"],
+    "multi_match_size": 2,
+    "known_multi_match_member": "",
+    "weeks": [
+      {
+        "number": 1,
+        "events": [
+          {"type": "box", "couple": ["Evi", "Tiziana"], "match": "no", "multi_match": []},
+          {"type": "night", "lights": 3, "matching": ["Linda", "Michelle", "Laura", "Tiziana", "Elena", "Adrianna", "Aurora", "Marla", "Ella", "Tonia"]}
+        ]
+      }
+    ]
   }
 }

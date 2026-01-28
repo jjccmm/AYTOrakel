@@ -14,10 +14,10 @@ import shutil
 
 
 def main():
-    season = 's5vip'
+    season = 's7'
     save_reel = False
     load_from_file = False
-    save_to_file = False
+    save_to_file = True
     
     data = read_season_data(season=season) 
     create_folders(season)
@@ -108,7 +108,7 @@ def main():
 
     save_light_map(data, logs)
 
-    if save_to_file and len(df) < 20_000:
+    if save_to_file: # and len(df) < 20_000:
         df.to_csv(f'{season}/remaining_combinations_dm.csv', index=False)
     
     if save_reel:
