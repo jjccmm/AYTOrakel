@@ -864,6 +864,13 @@
           {"type": "box", "couple": ["Evi", "Tiziana"], "match": "no", "multi_match": []},
           {"type": "night", "lights": 3, "matching": ["Linda", "Michelle", "Laura", "Tiziana", "Elena", "Adrianna", "Aurora", "Marla", "Ella", "Tonia"]}
         ]
+      },
+      {
+        "number": 2,
+        "events": [
+          {"type": "box", "couple": ["Evi", "Laura"], "match": "sold", "multi_match": []},
+          {"type": "night", "lights": 2, "matching": ["Tonia", "Ella", "Laura", "Tiziana", "Michelle", "Alicia", "Adrianna", "Marla", "Elena", "Linda"]}
+        ]
       }
     ]
   }

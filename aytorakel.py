@@ -16,7 +16,7 @@ import shutil
 def main():
     season = 's7'
     save_reel = False
-    load_from_file = False
+    load_from_file = True
     save_to_file = True
     
     data = read_season_data(season=season) 
