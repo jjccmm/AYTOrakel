@@ -17,7 +17,7 @@ def main():
     season = 's7'
     save_reel = False
     load_from_file = True
-    save_to_file = True
+    save_to_file = False
     
     data = read_season_data(season=season) 
     create_folders(season)

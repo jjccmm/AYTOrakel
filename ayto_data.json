@@ -878,6 +878,12 @@
           {"type": "box", "couple": ["Julian S.", "Linda"], "match": "no", "multi_match": []},
           {"type": "night", "lights": 2, "matching": ["Linda", "Michelle", "Laura", "Tiziana", "Aurora", "Adrianna", "Alicia", "Marla", "Elena", "Tonia"]}
         ]
+      },
+      {
+        "number": 4,
+        "events": [
+          {"type": "box", "couple": ["Julian M.", "Marla"], "match": "yes", "multi_match": []}
+        ]
       }
     ]
   }
