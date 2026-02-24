@@ -884,6 +884,13 @@
         "events": [
           {"type": "box", "couple": ["Julian M.", "Marla"], "match": "yes", "multi_match": []}
         ]
+      },
+      {
+        "number": 5,
+        "events": [
+          {"type": "box", "couple": ["Chris", "Aurora"], "match": "no", "multi_match": []},
+          {"type": "night", "lights": 5, "matching": ["Linda", "Michelle", "Aurora", "Tiziana", "Elena", "Marla", "Adrianna", "Laura", "Ella", "Tonia"]}
+        ]
       }
     ]
   }
