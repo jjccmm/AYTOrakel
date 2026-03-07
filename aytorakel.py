@@ -368,8 +368,10 @@ def update_after_new_person_event(data, logs, df, event, week_number):
 def update_after_remove_person_event(data, logs, df, event, week_number):
     """
     One single person of the group of more is removed from the show without revealing their match.
-    This happed so far only to Jimi in Season 5 VIP. He was also part of the mulit match. 
-    All possibilities where he is part of the mathching night can now be removed.
+    This happed so far:
+    - to Jimi in Season 5 VIP. He was know part of the multi match. 
+    - to Alicia in Season 7. She was revealed when leaving as multi match.
+    All possibilities where the person is part of the mathching night can now be removed.
     """
     got = data['group_of_ten']
     gom = data['group_of_more']
@@ -377,6 +379,11 @@ def update_after_remove_person_event(data, logs, df, event, week_number):
     removed_person_idx = gom.index(removed_person)
     # Remove all rows from df, where the removed_person_idx occurs in the coloumns of the group of ten
     df = df[~df[got].isin([removed_person_idx]).any(axis=1)]
+    
+    if event['multi_match']:
+        df = df[df[['mm1','mm2']].isin([removed_person_idx]).any(axis=1)]
+    else:
+        df = df[~df[['mm1','mm2']].isin([removed_person_idx]).any(axis=1)]
     return df 
 
 
@@ -607,7 +614,7 @@ def save_insta_probabilities(data, logs, tight_image_name, event_number, event_n
     elif 'new_person' in event_name:
         event='Nachkommer'
     elif 'remove_person' in event_name:
-        event='Ciao Jimi'
+        event='Ciao Alicia'
     elif 'solution' in event_name:
         event='Auflösung'
     combinations=f'Mögliche Kombinationen:  {remaining_combinations:,}'.replace(',','.')
@@ -1006,12 +1013,12 @@ def save_insta_combinations(data, df, event_number):
         d.text((90+i*(img.width/11), 290), name, fill='red', font=font_18, stroke_width=2, stroke_fill='black', anchor='mm')
 
     # Quick hack to remove Jimi from combinations
-    removed_person = 'Jimi'
-    removed_person_idx = gom.index(removed_person)
-    df_no_duplicates = df[~df[got].isin([removed_person_idx]).any(axis=1)]
+    #removed_person = 'Jimi'
+    #removed_person_idx = gom.index(removed_person)
+    #df_no_duplicates = df[~df[got].isin([removed_person_idx]).any(axis=1)]
     # Hack end
     
-    df_no_duplicates = df_no_duplicates.drop_duplicates(subset='id', keep='first')
+    df_no_duplicates = df.drop_duplicates(subset='id', keep='first')
     df_no_duplicates.reset_index(drop=True, inplace=True)
     for j, row in df_no_duplicates.iterrows():
         for i, name in enumerate(got):
