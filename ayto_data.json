@@ -899,6 +899,27 @@
           {"type": "remove_person", "person": "Alicia", "multi_match": true},
           {"type": "night", "lights": 4, "matching": ["Ella", "Michelle", "Linda", "Laura", "Elena", "Marla", "Tiziana", "Adrianna", "Aurora", "Tonia"]}
         ]
+      },
+      {
+        "number": 7,
+        "events": [
+          {"type": "box", "couple": ["Noel", "Tonia"], "match": "yes", "multi_match": []},
+          {"type": "night", "lights": 4, "matching": ["Linda", "Michelle", "Aurora", "Tiziana", "Laura", "Marla", "Adrianna", "Elena", "Ella", "Tonia"]}
+        ]
+      },
+      {
+        "number": 8,
+        "events": [
+          {"type": "box", "couple": ["Ema", "Michelle"], "match": "no", "multi_match": []},
+          {"type": "night", "lights": 5, "matching": ["Linda", "Aurora", "Michelle", "Tiziana", "Elena", "Marla", "Adrianna", "Laura", "Ella", "Tonia"]}
+        ]
+      },
+      {
+        "number": 9,
+        "events": [
+          {"type": "box", "couple": ["Meji", "Ella"], "match": "sold", "multi_match": []},
+          {"type": "night", "lights": 3, "matching": ["Tiziana", "Linda", "Aurora", "Michelle", "Elena", "Marla", "Laura", "Adrianna", "Ella", "Tonia"]}
+        ]
       }
     ]
   }
