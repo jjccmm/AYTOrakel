@@ -14,10 +14,10 @@ import shutil
 
 
 def main():
-    season = 's7'
+    season = 's6vip'
     save_reel = False
-    load_from_file = True
-    save_to_file = False
+    load_from_file = False
+    save_to_file = True
     
     data = read_season_data(season=season) 
     create_folders(season)
