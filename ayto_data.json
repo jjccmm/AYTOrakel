@@ -924,7 +924,7 @@
     ]
   },
   "s6vip": {
-    "group_of_ten": ["Bennett", "Brian", "Cansin", "Daymian", "Fabi", "Germain", "Johannes.", "Marwin", "Raúl", "Robin"],
+    "group_of_ten": ["Bennett", "Brian", "Cansin", "Daymian", "Fabi", "Germain", "Johannes", "Marwin", "Raul", "Robin"],
     "group_of_more": ["Alexandra", "Christin", "Emma", "Francesca", "Janice", "Jenny", "Joena", "Julia", "Marta", "Michelle", "Zoe"],
     "multi_match_size": 2,
     "known_multi_match_member": "",
@@ -933,8 +933,22 @@
         "number": 1,
         "events": [
           {"type": "box", "couple": ["Marwin", "Christin"], "match": "no", "multi_match": []},
-          {"type": "box", "couple": ["Marwin", "Marta"], "match": "no", "multi_match": []},
+          {"type": "box", "couple": ["Robin", "Marta"], "match": "no", "multi_match": []},
           {"type": "night", "lights": 3, "matching": ["Francesca", "Christin", "Zoe", "Julia", "Janice", "Emma", "Marta", "Michelle", "Alexandra", "Jenny"]}
+        ]
+      },
+      {
+        "number": 2,
+        "events": [
+          {"type": "box", "couple": ["Daymian", "Julia"], "match": "no", "multi_match": []},
+          {"type": "night", "lights": 3, "matching": ["Joena", "Alexandra", "Zoe", "Jenny", "Julia", "Emma", "Janice", "Michelle", "Marta", "Christin"]}
+        ]
+      },
+      {
+        "number": 3,
+        "events": [
+          {"type": "box", "couple": ["Johannes", "Marta"], "match": "yes", "multi_match": ["Janice"]},
+          {"type": "night", "lights": 3, "matching": ["Julia", "Francesca", "Jenny", "Zoe", "Emma", "Alexandra", "Marta", "Joena", "Michelle", "Christin"]}
         ]
       }
     ]
