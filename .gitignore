@@ -1,0 +1,5 @@
+__pycache__/
+*.py[cod]
+.venv/
+*/.ayto_checkpoint_week_*.npz
+insta_styles/face_layer_templates/ayto_s6vip_laurenz_guide.png

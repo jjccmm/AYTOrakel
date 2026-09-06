@@ -1,0 +1,690 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AYTOrakel Data Viewer</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #090b17;
+      --panel: #11152a;
+      --panel-2: #191e39;
+      --line: #303758;
+      --text: #f7f7fb;
+      --muted: #aab1cd;
+      --accent: #ff365d;
+      --yellow: #ffe247;
+      --green: #48c78e;
+      --danger: #ff5964;
+      --radius: 14px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      background: radial-gradient(circle at 85% 0, #342038 0, transparent 30%), var(--bg);
+      font: 15px/1.45 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    button, input, select, textarea { font: inherit; }
+    button {
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      padding: 8px 12px;
+      color: var(--text);
+      background: var(--panel-2);
+      cursor: pointer;
+    }
+    button:hover { border-color: var(--yellow); }
+    button.primary { color: #14100a; border-color: var(--yellow); background: var(--yellow); font-weight: 700; }
+    button.danger { color: #fff; border-color: #7b3442; background: #52232e; }
+    button.small { padding: 5px 9px; font-size: 13px; }
+    input, select, textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      padding: 9px 11px;
+      color: var(--text);
+      background: #0c1021;
+    }
+    textarea {
+      min-height: 190px;
+      resize: vertical;
+      tab-size: 2;
+      font: 13px/1.45 ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    header {
+      position: sticky;
+      z-index: 10;
+      top: 0;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      padding: 12px 18px;
+      border-bottom: 1px solid var(--line);
+      background: rgb(9 11 23 / 94%);
+      backdrop-filter: blur(12px);
+    }
+    header h1 { margin: 0 auto 0 0; font-size: 20px; letter-spacing: .02em; }
+    #status { color: var(--muted); font-size: 13px; white-space: nowrap; }
+    #status.dirty { color: var(--yellow); }
+    .layout { display: grid; grid-template-columns: 245px minmax(0, 1fr); min-height: calc(100vh - 62px); }
+    aside { padding: 18px 14px; border-right: 1px solid var(--line); background: rgb(13 16 32 / 88%); }
+    aside .row { display: flex; gap: 8px; margin-bottom: 12px; }
+    #season-list { display: grid; gap: 6px; margin-top: 12px; }
+    .season-button { width: 100%; text-align: left; }
+    .season-button.active { color: #111; border-color: var(--yellow); background: var(--yellow); font-weight: 800; }
+    main { min-width: 0; padding: 22px clamp(16px, 3vw, 42px) 80px; }
+    .empty { max-width: 680px; margin: 10vh auto; padding: 35px; text-align: center; border: 1px dashed var(--line); border-radius: var(--radius); color: var(--muted); }
+    .title-row, .toolbar, .week-head, .event-head { display: flex; gap: 9px; align-items: center; flex-wrap: wrap; }
+    .title-row h2 { margin: 0 auto 0 0; font-size: 31px; }
+    .tabs { display: flex; gap: 4px; margin: 22px 0 16px; border-bottom: 1px solid var(--line); }
+    .tab { border: 0; border-radius: 9px 9px 0 0; color: var(--muted); background: transparent; }
+    .tab.active { color: var(--text); background: var(--panel-2); }
+    .panel, .week, .event {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgb(17 21 42 / 92%);
+      box-shadow: 0 10px 28px rgb(0 0 0 / 16%);
+    }
+    .panel { margin-bottom: 16px; padding: 18px; }
+    .panel h3 { margin: 0 0 12px; }
+    .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+    .metric { padding: 12px; border-radius: 10px; background: var(--panel-2); }
+    .metric strong { display: block; margin-top: 3px; font-size: 21px; }
+    .muted { color: var(--muted); }
+    .week { margin: 14px 0; overflow: hidden; }
+    .week-head { padding: 13px 15px; border-bottom: 1px solid var(--line); background: var(--panel-2); }
+    .week-head h3 { margin: 0 auto 0 0; }
+    .events { display: grid; gap: 10px; padding: 12px; }
+    .event { padding: 12px; background: #0e1225; }
+    .event-head strong { margin-right: auto; }
+    .badge { border-radius: 999px; padding: 3px 8px; color: #15100b; background: var(--yellow); font-size: 12px; font-weight: 800; }
+    .event textarea { min-height: 150px; margin-top: 10px; }
+    .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-top: 14px; }
+    .field { display: grid; gap: 5px; }
+    .field > span { color: var(--muted); font-size: 13px; }
+    .pair-list { display: grid; gap: 8px; margin-top: 12px; }
+    .pair-row { display: grid; grid-template-columns: 1fr auto 1fr auto; gap: 8px; align-items: center; }
+    .pair-row > span { color: var(--muted); text-align: center; }
+    details { margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--line); }
+    summary { color: var(--muted); cursor: pointer; }
+    .add-event { display: grid; grid-template-columns: minmax(150px, 240px) auto; gap: 8px; padding: 0 12px 14px; }
+    .json-error { margin-top: 7px; color: #ff9ba4; font-size: 13px; min-height: 18px; }
+    .validation { white-space: pre-wrap; }
+    .validation.ok { color: var(--green); }
+    .validation.bad { color: #ff9ba4; }
+    .hint { margin: 0 0 16px; padding: 11px 13px; border-left: 3px solid var(--yellow); color: var(--muted); background: #17182a; }
+    .hidden { display: none !important; }
+    @media (max-width: 800px) {
+      header { align-items: stretch; flex-wrap: wrap; }
+      header h1 { width: 100%; }
+      .layout { display: block; }
+      aside { position: static; border-right: 0; border-bottom: 1px solid var(--line); }
+      #season-list { grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); }
+      .pair-row { grid-template-columns: 1fr; }
+      .pair-row > span { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>AYTOrakel Data Viewer</h1>
+    <span id="status">Keine Datei geladen</span>
+    <button id="open-button">JSON öffnen</button>
+    <button id="validate-button">Prüfen</button>
+    <button id="save-button" class="primary">Speichern</button>
+    <input id="file-input" class="hidden" type="file" accept="application/json,.json">
+  </header>
+  <div class="layout">
+    <aside>
+      <div class="row">
+        <input id="season-filter" aria-label="Season suchen" placeholder="Season suchen …">
+        <button id="add-season" title="Season hinzufügen">＋</button>
+      </div>
+      <div id="season-list"></div>
+    </aside>
+    <main id="content">
+      <div class="empty">
+        <h2>ayto_data.json öffnen</h2>
+        <p>Diese einzelne HTML-Datei benötigt weder Node noch Installation. Öffne die JSON über den Button oben. Änderungen können direkt zurückgeschrieben werden, sofern der Browser das erlaubt; andernfalls wird eine neue JSON heruntergeladen.</p>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    "use strict";
+
+    const state = {
+      data: null,
+      selected: null,
+      tab: "timeline",
+      fileHandle: null,
+      dirty: false,
+      filename: "ayto_data.json",
+      serverSave: new URLSearchParams(location.search).get("save") === "1"
+    };
+
+    const $ = (selector, root = document) => root.querySelector(selector);
+    const el = (name, className, text) => {
+      const node = document.createElement(name);
+      if (className) node.className = className;
+      if (text !== undefined) node.textContent = text;
+      return node;
+    };
+    const clone = value => JSON.parse(JSON.stringify(value));
+    const pretty = value => JSON.stringify(value, null, 2);
+
+    function setStatus(message, dirty = state.dirty) {
+      const status = $("#status");
+      status.textContent = message;
+      status.classList.toggle("dirty", dirty);
+    }
+
+    function changed() {
+      state.dirty = true;
+      setStatus(`${state.filename} – ungespeichert`, true);
+      renderSeasonList();
+    }
+
+    function loadData(data, filename, handle = null) {
+      if (!data || Array.isArray(data) || typeof data !== "object") {
+        throw new Error("Die oberste JSON-Ebene muss ein Objekt mit Seasons sein.");
+      }
+      state.data = data;
+      state.filename = filename || "ayto_data.json";
+      state.fileHandle = handle;
+      state.selected = Object.keys(data)[0] || null;
+      state.tab = "timeline";
+      state.dirty = false;
+      setStatus(`${state.filename} geladen`, false);
+      render();
+    }
+
+    async function openFile() {
+      if (window.showOpenFilePicker) {
+        try {
+          const [handle] = await window.showOpenFilePicker({
+            types: [{ description: "AYTO JSON", accept: { "application/json": [".json"] } }],
+            multiple: false
+          });
+          const file = await handle.getFile();
+          loadData(JSON.parse(await file.text()), file.name, handle);
+          return;
+        } catch (error) {
+          if (error.name === "AbortError") return;
+        }
+      }
+      $("#file-input").click();
+    }
+
+    async function saveFile() {
+      if (!state.data) return;
+      const contents = pretty(state.data) + "\n";
+      try {
+        let handle = state.fileHandle;
+        if (!handle && state.serverSave) {
+          const response = await fetch("ayto_data.json", {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: contents
+          });
+          if (!response.ok) throw new Error(await response.text() || `HTTP ${response.status}`);
+        } else if (!handle && window.showSaveFilePicker) {
+          handle = await window.showSaveFilePicker({
+            suggestedName: state.filename,
+            types: [{ description: "AYTO JSON", accept: { "application/json": [".json"] } }]
+          });
+        }
+        if (handle) {
+          const writable = await handle.createWritable();
+          await writable.write(contents);
+          await writable.close();
+          state.fileHandle = handle;
+        } else if (!state.serverSave) {
+          const blob = new Blob([contents], { type: "application/json" });
+          const link = document.createElement("a");
+          link.href = URL.createObjectURL(blob);
+          link.download = state.filename;
+          link.click();
+          setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+        }
+        state.dirty = false;
+        setStatus(`${state.filename} gespeichert`, false);
+      } catch (error) {
+        if (error.name !== "AbortError") alert(`Speichern fehlgeschlagen: ${error.message}`);
+      }
+    }
+
+    function eventTemplate(type, season) {
+      const groups = Object.values(season?.groups || {});
+      const standardPairCount = Math.min(10, ...(groups.length ? groups.map(names => names.length) : [10]));
+      const templates = {
+        box: { type: "box", pair: ["", ""], result: "no" },
+        matching_night: {
+          type: "matching_night",
+          pairs: Array.from({ length: standardPairCount }, () => ["", ""]),
+          lights: 0,
+          automatic_lights: 0
+        },
+        cast_change: {
+          type: "cast_change", title: "Cast Update", add: [], remove: [], face_layer: "",
+          match_update: { mode: "rebuild", multi_matches: [] }
+        },
+        reveal: { type: "reveal", pairs: [], complete_groups: [], multi_match_members: [] },
+        solution: { type: "solution", pairs: [] }
+      };
+      return clone(templates[type] || { type });
+    }
+
+    function newSeason() {
+      if (!state.data) state.data = {};
+      let key = prompt("Kürzel der neuen Season, z. B. s7vip:");
+      if (!key) return;
+      key = key.trim();
+      if (!key || state.data[key]) return alert("Dieses Season-Kürzel existiert bereits.");
+      state.data[key] = {
+        schema_version: 2,
+        initial_active: "all",
+        groups: { a: [], b: [] },
+        matrix: { rows: "a", bits: "b" },
+        initial_match_model: { multi_matches: [] },
+        style: { background: "", face_layer: "" },
+        status: "ongoing",
+        outcome: null,
+        competitive_end_week: null,
+        target_lights: 10,
+        weeks: [{ number: 1, events: [] }]
+      };
+      state.selected = key;
+      changed();
+      render();
+    }
+
+    function renameSeason() {
+      const oldKey = state.selected;
+      const newKey = prompt("Neues Season-Kürzel:", oldKey)?.trim();
+      if (!newKey || newKey === oldKey) return;
+      if (state.data[newKey]) return alert("Dieses Season-Kürzel existiert bereits.");
+      const rebuilt = {};
+      for (const [key, value] of Object.entries(state.data)) rebuilt[key === oldKey ? newKey : key] = value;
+      state.data = rebuilt;
+      state.selected = newKey;
+      changed();
+      render();
+    }
+
+    function duplicateSeason() {
+      const source = state.selected;
+      const key = prompt("Kürzel der Kopie:", `${source}_copy`)?.trim();
+      if (!key || state.data[key]) return;
+      state.data[key] = clone(state.data[source]);
+      state.selected = key;
+      changed();
+      render();
+    }
+
+    function deleteSeason() {
+      if (!confirm(`Season „${state.selected}“ wirklich löschen?`)) return;
+      delete state.data[state.selected];
+      state.selected = Object.keys(state.data)[0] || null;
+      changed();
+      render();
+    }
+
+    function renderSeasonList() {
+      const list = $("#season-list");
+      list.replaceChildren();
+      if (!state.data) return;
+      const filter = $("#season-filter").value.trim().toLowerCase();
+      for (const key of Object.keys(state.data)) {
+        if (filter && !key.toLowerCase().includes(filter)) continue;
+        const button = el("button", `season-button${key === state.selected ? " active" : ""}`, key);
+        button.onclick = () => { state.selected = key; state.tab = "timeline"; render(); };
+        list.append(button);
+      }
+    }
+
+    function render() {
+      renderSeasonList();
+      const content = $("#content");
+      content.replaceChildren();
+      if (!state.data || !state.selected) {
+        content.append(el("div", "empty", "Noch keine Season vorhanden. Lege links eine neue Season an."));
+        return;
+      }
+      const season = state.data[state.selected];
+      const title = el("div", "title-row");
+      title.append(el("h2", "", state.selected));
+      for (const [label, action, css] of [
+        ["Umbenennen", renameSeason, ""], ["Duplizieren", duplicateSeason, ""], ["Löschen", deleteSeason, "danger"]
+      ]) {
+        const button = el("button", css, label); button.onclick = action; title.append(button);
+      }
+      content.append(title);
+
+      const tabs = el("div", "tabs");
+      for (const [id, label] of [["timeline", "Season & Events"], ["season-json", "Season JSON"], ["all-json", "Gesamte JSON"]]) {
+        const button = el("button", `tab${state.tab === id ? " active" : ""}`, label);
+        button.onclick = () => { state.tab = id; render(); };
+        tabs.append(button);
+      }
+      content.append(tabs);
+      if (state.tab === "timeline") renderTimeline(content, season);
+      else if (state.tab === "season-json") renderJsonEditor(content, season, value => state.data[state.selected] = value);
+      else renderJsonEditor(content, state.data, value => {
+        state.data = value;
+        if (!state.data[state.selected]) state.selected = Object.keys(state.data)[0] || null;
+      });
+    }
+
+    function renderTimeline(content, season) {
+      const groups = season.groups || {};
+      const weeks = season.weeks || [];
+      const eventCount = weeks.reduce((total, week) => total + (week.events || []).length, 0);
+      const summary = el("section", "panel");
+      summary.append(el("h3", "", "Überblick"));
+      const grid = el("div", "summary-grid");
+      const metrics = [
+        ["Schema", season.schema_version ?? "–"],
+        ["Gruppen", Object.keys(groups).join(" / ") || "–"],
+        ["Teilnehmende", Object.values(groups).reduce((n, names) => n + (names?.length || 0), 0)],
+        ["Wochen", weeks.length],
+        ["Events", eventCount],
+        ["Multi-Match-Regeln", season.initial_match_model?.multi_matches?.length || 0]
+      ];
+      for (const [label, value] of metrics) {
+        const metric = el("div", "metric"); metric.append(el("span", "muted", label), el("strong", "", String(value))); grid.append(metric);
+      }
+      summary.append(grid);
+      content.append(summary);
+
+      const competition = el("section", "panel");
+      competition.append(el("h3", "", "Staffelstatus"));
+      const competitionForm = el("div", "form-grid");
+      competitionForm.append(
+        labelled("Status", selectInput(["ongoing", "completed"], season.status || "ongoing", value => {
+          season.status = value;
+          if (value === "ongoing") { season.outcome = null; season.competitive_end_week = null; }
+          else { season.outcome ||= "won"; season.competitive_end_week ||= 10; }
+          changed(); render();
+        })),
+        labelled("Ausgang", selectInput(["", "won", "lost"], season.outcome || "", value => {
+          season.outcome = value || null; changed();
+        })),
+        labelled("Wettbewerbsende", (() => {
+          const input = el("input"); input.type = "number"; input.min = "1";
+          input.value = season.competitive_end_week ?? "";
+          input.onchange = () => { season.competitive_end_week = input.value ? Number(input.value) : null; changed(); };
+          return input;
+        })()),
+        labelled("Ziellichter", (() => {
+          const input = el("input"); input.type = "number"; input.min = "1";
+          input.value = season.target_lights ?? 10;
+          input.onchange = () => { season.target_lights = Number(input.value); changed(); };
+          return input;
+        })())
+      );
+      competition.append(competitionForm);
+      content.append(competition);
+
+      const settings = el("section", "panel");
+      settings.append(el("h3", "", "Season-Einstellungen und Teilnehmende"));
+      settings.append(el("p", "hint", "Hier stehen alle Season-Felder außer den Wochen. Auch neue, zukünftige Felder können direkt ergänzt werden."));
+      const metadata = clone(season); delete metadata.weeks;
+      const textarea = el("textarea"); textarea.value = pretty(metadata);
+      const error = el("div", "json-error");
+      const apply = el("button", "primary", "Einstellungen übernehmen");
+      apply.onclick = () => {
+        try {
+          const value = JSON.parse(textarea.value);
+          state.data[state.selected] = { ...value, weeks: season.weeks || [] };
+          error.textContent = ""; changed(); render();
+        } catch (exception) { error.textContent = exception.message; }
+      };
+      settings.append(textarea, error, apply);
+      content.append(settings);
+
+      weeks.forEach((week, weekIndex) => content.append(renderWeek(week, weekIndex, weeks, season)));
+      const addWeek = el("button", "primary", "＋ Woche hinzufügen");
+      addWeek.onclick = () => {
+        const last = weeks.length ? Math.max(...weeks.map(week => Number(week.number) || 0)) : 0;
+        weeks.push({ number: last + 1, events: [] }); changed(); render();
+      };
+      content.append(addWeek);
+    }
+
+    function renderWeek(week, weekIndex, weeks, season) {
+      const section = el("section", "week");
+      const head = el("div", "week-head");
+      head.append(el("h3", "", `Woche ${week.number}`));
+      const number = el("input"); number.type = "number"; number.value = week.number; number.style.width = "85px";
+      number.onchange = () => { week.number = Number(number.value); changed(); render(); };
+      head.append(number);
+      const up = el("button", "small", "↑"); up.disabled = weekIndex === 0;
+      up.onclick = () => { [weeks[weekIndex - 1], weeks[weekIndex]] = [weeks[weekIndex], weeks[weekIndex - 1]]; changed(); render(); };
+      const down = el("button", "small", "↓"); down.disabled = weekIndex === weeks.length - 1;
+      down.onclick = () => { [weeks[weekIndex + 1], weeks[weekIndex]] = [weeks[weekIndex], weeks[weekIndex + 1]]; changed(); render(); };
+      const remove = el("button", "small danger", "Woche löschen");
+      remove.onclick = () => { if (confirm(`Woche ${week.number} löschen?`)) { weeks.splice(weekIndex, 1); changed(); render(); } };
+      head.append(up, down, remove);
+      section.append(head);
+
+      const events = week.events ||= [];
+      const eventList = el("div", "events");
+      events.forEach((event, eventIndex) => eventList.append(renderEvent(event, eventIndex, events, season)));
+      if (!events.length) eventList.append(el("p", "muted", "Noch keine Events in dieser Woche."));
+      section.append(eventList);
+
+      const add = el("div", "add-event");
+      const select = el("select");
+      for (const type of ["box", "matching_night", "cast_change", "reveal", "solution"]) {
+        const option = el("option", "", type); option.value = type; select.append(option);
+      }
+      const button = el("button", "primary", "Event hinzufügen");
+      button.onclick = () => { events.push(eventTemplate(select.value, season)); changed(); render(); };
+      add.append(select, button); section.append(add);
+      return section;
+    }
+
+    function eventLabel(event, index) {
+      if (event.title) return event.title;
+      if (event.type === "box") return `${event.pair?.join(" × ") || "Match Box"} – ${event.result || "?"}`;
+      if (event.type === "matching_night") return event.result === "sold" ? "Matching Night – verkauft" : `${event.lights ?? "?"} Lichter`;
+      return event.type || `Event ${index + 1}`;
+    }
+
+    function selectInput(options, value, onChange) {
+      const select = el("select");
+      for (const optionValue of options) {
+        const option = el("option", "", String(optionValue));
+        option.value = String(optionValue);
+        option.selected = String(optionValue) === String(value ?? "");
+        select.append(option);
+      }
+      select.onchange = () => onChange(select.value);
+      return select;
+    }
+
+    function participantInput(names, value, onChange) {
+      return selectInput(["", ...names], value || "", onChange);
+    }
+
+    function labelled(label, control) {
+      const field = el("label", "field");
+      field.append(el("span", "", label), control);
+      return field;
+    }
+
+    function groupPair(pair, season) {
+      const groupNames = Object.values(season.groups || {});
+      const left = groupNames[0] || [];
+      const right = groupNames[1] || [];
+      return {
+        left,
+        right,
+        leftValue: (pair || []).find(name => left.includes(name)) || "",
+        rightValue: (pair || []).find(name => right.includes(name)) || ""
+      };
+    }
+
+    function advancedJson(event, eventIndex, events) {
+      const details = el("details");
+      details.append(el("summary", "", "Sonderfall / komplettes Event als JSON"));
+      const textarea = el("textarea"); textarea.value = pretty(event);
+      const error = el("div", "json-error");
+      const apply = el("button", "small primary", "JSON übernehmen");
+      apply.onclick = () => {
+        try { events[eventIndex] = JSON.parse(textarea.value); error.textContent = ""; changed(); render(); }
+        catch (exception) { error.textContent = exception.message; }
+      };
+      details.append(textarea, error, apply);
+      return details;
+    }
+
+    function renderBoxForm(card, event, eventIndex, events, season) {
+      const pair = groupPair(event.pair, season);
+      const form = el("div", "form-grid");
+      const values = [pair.leftValue, pair.rightValue];
+      const updatePair = (index, value) => {
+        values[index] = value;
+        event.pair = [...values];
+        changed();
+      };
+      form.append(
+        labelled(Object.keys(season.groups || {})[0] || "Gruppe 1", participantInput(pair.left, values[0], value => updatePair(0, value))),
+        labelled(Object.keys(season.groups || {})[1] || "Gruppe 2", participantInput(pair.right, values[1], value => updatePair(1, value))),
+        labelled("Ergebnis", selectInput(["no", "yes", "sold"], event.result, value => { event.result = value; changed(); }))
+      );
+      card.append(form, advancedJson(event, eventIndex, events));
+    }
+
+    function renderNightForm(card, event, eventIndex, events, season) {
+      const groupNames = Object.values(season.groups || {});
+      const maximum = Math.max(10, ...groupNames.map(names => names.length));
+      const numbers = Array.from({ length: maximum + 1 }, (_, index) => index);
+      const form = el("div", "form-grid");
+      const sold = event.result === "sold";
+      form.append(labelled("Ergebnis", selectInput(["normal", "sold"], sold ? "sold" : "normal", value => {
+        if (value === "sold") { event.result = "sold"; delete event.lights; }
+        else { delete event.result; event.lights ??= 0; }
+        changed(); render();
+      })));
+      if (!sold) {
+        form.append(
+          labelled("Lichter", selectInput(numbers, event.lights ?? 0, value => { event.lights = Number(value); changed(); })),
+          labelled("Automatische Lichter", selectInput(numbers, event.automatic_lights ?? 0, value => { event.automatic_lights = Number(value); changed(); }))
+        );
+      }
+      card.append(form);
+
+      const pairs = event.pairs ||= [];
+      const list = el("div", "pair-list");
+      pairs.forEach((rawPair, pairIndex) => {
+        const pair = groupPair(rawPair, season);
+        const values = [pair.leftValue, pair.rightValue];
+        const row = el("div", "pair-row");
+        const updatePair = (index, value) => {
+          values[index] = value;
+          pairs[pairIndex] = [...values];
+          changed();
+        };
+        row.append(
+          participantInput(pair.left, values[0], value => updatePair(0, value)),
+          el("span", "", "×"),
+          participantInput(pair.right, values[1], value => updatePair(1, value))
+        );
+        const remove = el("button", "small danger", "Entfernen");
+        remove.onclick = () => { pairs.splice(pairIndex, 1); changed(); render(); };
+        row.append(remove); list.append(row);
+      });
+      if (!pairs.length) list.append(el("p", "muted", "Noch keine Sitzpaare eingetragen."));
+      card.append(list);
+      const addPair = el("button", "small primary", "+ Sitzpaar");
+      addPair.onclick = () => { pairs.push(["", ""]); changed(); render(); };
+      card.append(addPair, advancedJson(event, eventIndex, events));
+    }
+
+    function renderEvent(event, eventIndex, events, season) {
+      const card = el("article", "event");
+      const head = el("div", "event-head");
+      head.append(el("span", "badge", `Event ${eventIndex + 1}`), el("strong", "", eventLabel(event, eventIndex)));
+      const up = el("button", "small", "↑"); up.disabled = eventIndex === 0;
+      up.onclick = () => { [events[eventIndex - 1], events[eventIndex]] = [events[eventIndex], events[eventIndex - 1]]; changed(); render(); };
+      const down = el("button", "small", "↓"); down.disabled = eventIndex === events.length - 1;
+      down.onclick = () => { [events[eventIndex + 1], events[eventIndex]] = [events[eventIndex], events[eventIndex + 1]]; changed(); render(); };
+      const copy = el("button", "small", "Kopieren"); copy.onclick = () => { events.splice(eventIndex + 1, 0, clone(event)); changed(); render(); };
+      const remove = el("button", "small danger", "Löschen"); remove.onclick = () => { events.splice(eventIndex, 1); changed(); render(); };
+      head.append(up, down, copy, remove); card.append(head);
+      if (event.type === "box") renderBoxForm(card, event, eventIndex, events, season);
+      else if (event.type === "matching_night") renderNightForm(card, event, eventIndex, events, season);
+      else card.append(advancedJson(event, eventIndex, events));
+      return card;
+    }
+
+    function renderJsonEditor(content, value, assign) {
+      const panel = el("section", "panel");
+      panel.append(el("p", "hint", "Diese Ansicht enthält ausnahmslos alle Felder. Damit bleiben auch zukünftige Event- oder Season-Erweiterungen bearbeitbar."));
+      const textarea = el("textarea"); textarea.style.minHeight = "65vh"; textarea.value = pretty(value);
+      const error = el("div", "json-error");
+      const apply = el("button", "primary", "JSON übernehmen");
+      apply.onclick = () => {
+        try { assign(JSON.parse(textarea.value)); error.textContent = ""; changed(); render(); }
+        catch (exception) { error.textContent = exception.message; }
+      };
+      panel.append(textarea, error, apply); content.append(panel);
+    }
+
+    function validateData() {
+      if (!state.data) return alert("Bitte zuerst eine JSON öffnen.");
+      const errors = [];
+      for (const [key, season] of Object.entries(state.data)) {
+        if (!season.groups || Object.keys(season.groups).length !== 2) errors.push(`${key}: genau zwei Gruppen erwartet`);
+        if (!["ongoing", "completed"].includes(season.status)) errors.push(`${key}: Status fehlt oder ist ungültig`);
+        if (season.status === "completed" && !["won", "lost"].includes(season.outcome)) errors.push(`${key}: abgeschlossene Staffel braucht won/lost`);
+        if (season.status === "ongoing" && season.outcome != null) errors.push(`${key}: laufende Staffel darf keinen Ausgang haben`);
+        if (!Number.isInteger(season.target_lights) || season.target_lights < 1) errors.push(`${key}: Ziellichter müssen positiv sein`);
+        const names = Object.values(season.groups || {}).flat();
+        if (new Set(names).size !== names.length) errors.push(`${key}: Namen sind nicht eindeutig`);
+        if (!Array.isArray(season.weeks)) errors.push(`${key}: weeks fehlt`);
+        let previous = 0;
+        for (const week of season.weeks || []) {
+          if (!Number.isInteger(week.number) || week.number <= previous) errors.push(`${key}: Wochennummern müssen aufsteigend sein`);
+          previous = week.number;
+          if (!Array.isArray(week.events)) errors.push(`${key} W${week.number}: events muss eine Liste sein`);
+          for (const event of week.events || []) if (!event.type) errors.push(`${key} W${week.number}: Event ohne type`);
+        }
+      }
+      const message = errors.length ? `Probleme gefunden:\n\n${errors.join("\n")}` : "Grundprüfung erfolgreich. Für die vollständige Solver-Prüfung zusätzlich ausführen:\npython aytorakel.py --all --validate";
+      alert(message);
+    }
+
+    $("#open-button").onclick = openFile;
+    $("#save-button").onclick = saveFile;
+    $("#validate-button").onclick = validateData;
+    $("#add-season").onclick = newSeason;
+    $("#season-filter").oninput = renderSeasonList;
+    $("#file-input").onchange = async event => {
+      const file = event.target.files[0];
+      if (!file) return;
+      try { loadData(JSON.parse(await file.text()), file.name); }
+      catch (error) { alert(`JSON konnte nicht geöffnet werden: ${error.message}`); }
+      event.target.value = "";
+    };
+    document.addEventListener("keydown", event => {
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "s") {
+        event.preventDefault(); saveFile();
+      }
+    });
+    window.addEventListener("beforeunload", event => {
+      if (state.dirty) { event.preventDefault(); event.returnValue = ""; }
+    });
+
+    fetch("ayto_data.json")
+      .then(response => { if (!response.ok) throw new Error(); return response.json(); })
+      .then(data => loadData(data, "ayto_data.json"))
+      .catch(() => setStatus("JSON über „Öffnen“ auswählen", false));
+  </script>
+</body>
+</html>
