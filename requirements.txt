@@ -1,4 +1,3 @@
-pandas 
 matplotlib
-seaborn
-tqdm
+numpy>=2.0
+Pillow

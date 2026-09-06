@@ -1,53 +1,126 @@
 # AYTOrakel
 
-**AYTOrakel** is a Python project that analyzes and visualizes match probabilities and light probabilities for the German RTL show *"Are You The One?"* (AYTO). The project processes data from the show, generates all possible match combinations, and updates probabilities based on events from each week. 
+AYTOrakel calculates exact Perfect Match probabilities for the German RTL+
+show *Are You The One?* and renders the final 1080x1350 Instagram posts.
 
-| ![Image 1](s4vip/insta/s4vip_1_2_insta_lights.png) | ![Image 2](s4vip/insta/s4vip_3_2_insta_Matching%20Night.png) |
-|:----------------------:|:----------------------:|
-| Probabilities for the Light Count before the 1st Matching Night |  Matching Probabilites after the 3rd Matching Night |
+Every possible solution is represented once as a bipartite Perfect Match graph.
+A double or triple match is therefore not counted several times merely because
+its members could sit in different ways during the finale.
 
-*Note: To be a bit more precise, the calculated probabilities state the probability that participant X wins with participant Y in the final matching night (for that, they need to be a perfect match). But, e.g., with a double match, the probability for each member is 50:50 to be selected in the final night.*
+## Project structure
 
-## 📱 Follow @AYTOrakel on Instagram
-The predictions are updated after each episode on Instagram. \
-[Follow AYTOrakel on Instagram](https://www.instagram.com/AYTOrakel) to stay up to date and join the discussions. \
-[Check out the AYTO-Strategies Repo on Github](https://github.com/jjccmm/AYTO-Strategies) to learn about the best ways to solve AYTO. 
+- `aytorakel.py` provides the command-line interface, validation, and checkpoints.
+- `ayto_solver.py` generates canonical match graphs and applies show events.
+- `ayto_performance.py` builds historical metrics and the win-chance model.
+- `insta_renderer.py` renders final posts directly in memory.
+- `ayto_data.json` contains cast, topology, style, and event data for every season.
+- `historical_metrics.csv` contains one reproducible metrics row per season/week.
+- `ayto_data_viewer.html` is a standalone viewer/editor for the season data.
+- `insta_styles/` contains backgrounds, fonts, and cast-specific face layers.
+- `tests/` contains the standard-library `unittest` suite.
 
-
-## 🙏 Acknowledgements
-
-This project uses data from the RTL show *"Are You The One?"* and various Python libraries for data processing and visualization. Special thanks to the developers of these libraries for their contributions to the open-source community. All images from the participants of the show belong to RTL. 
-
-
-## 📂 Project Structure
-
-- **`ayto_data.json`**: Contains data for the AYTO seasons.
-- **`aytorakel.py`**: Main script for processing and visualizing match probabilities.
-- **`insta_styles/`**: Directory containing images and fonts for styling the instagrm posts.
-- **`requirements.txt`**: List of dependencies required for the project.
-- **`"seasons"/`**: Directory containing generated images and data for the season.
-- **`explanation/`**: Directory containing images explaning the method for the predictions.
-
-
-
-## 🚀 Usage
-1. Install requirements
-```bash
-    pip install -r requirements.txt
-```
-2. Ensure that the `ayto_data.json` file contains the correct data for the season you want to analyze.
-3. Set in `aytorakel.py` the season you want and if a video/reel should get generated
-```bash
-    season = 's4vip'
-    save_reel = True
-```
-4. If you want to generate the reel, you need to install ffmpeg and set the path in `aytorakel.py`
-5. Run the main script:
+## Installation and use
 
 ```bash
-    python aytorakel.py
+pip install -r requirements.txt
+python aytorakel.py s6vip
 ```
 
-This will generate all possible match combinations, update probabilities based on events, and save visualizations in the `s4vip` directory.
+Useful commands:
 
+```bash
+# Ignore a compatible checkpoint and calculate the season again
+python aytorakel.py s4vip --from-scratch
 
+# Stop after a selected week
+python aytorakel.py s4vip --through-week 3
+
+# Validate data and artwork without calculating permutations
+python aytorakel.py s4vip --validate
+
+# Regenerate every season
+python aytorakel.py --all --from-scratch
+
+# Rebuild historical metrics without loading or rendering artwork
+python aytorakel.py --build-history --from-scratch
+
+# Run the tests
+python -m unittest discover -s tests -v
+```
+
+### Season data viewer
+
+On Windows, double-click `start_data_viewer.bat`; alternatively run
+`python ayto_data_viewer.py`. The viewer opens in the browser, loads
+`ayto_data.json` automatically, and saves changes atomically back to that file.
+It uses only Python's standard library and needs no npm, packages, or build
+step. It can add, duplicate, rename, and delete seasons; edit all season
+settings; and add, copy, reorder, or delete weeks and events. Match Boxes and
+Matching Nights have forms with participant and result/light drop-downs.
+Special cases remain available through a collapsed JSON editor, while the raw
+season and complete-file views keep arbitrary future fields editable.
+
+The HTML file can still be opened directly as a fallback; browser security then
+requires selecting the JSON via **Open JSON**, and **Save** may download a new
+copy instead of overwriting it. `Ctrl+S` uses the same save action. The editor
+performs quick structural checks; run
+`python aytorakel.py <season> --validate` for the full solver and artwork
+validation before calculating a season.
+
+The newest successful checkpoint is stored inside the season directory and is
+ignored by Git. A checkpoint is accepted only if its saved events are an exact
+prefix of the current data. Appending events resumes from it; editing history
+starts a fresh calculation.
+
+Final PNGs are written to `<season>/insta/`. Matplotlib helper plots and CSV
+intermediates are never written. If a configured face layer is missing,
+validation creates a labelled 1080x1350 authoring guide in
+`insta_styles/face_layer_templates/` and exits before the expensive calculation.
+
+The migrated `s6vip` data currently expects two new transparent overlays:
+`ayto_s6vip_initial.png` for the original 10/10 cast and
+`ayto_s6vip_laurenz.png` for the later cast state. Their generated guides are in
+`insta_styles/face_layer_templates/`; place finished overlays in
+`insta_styles/image_face_layers/` and rerun validation.
+
+## Event data
+
+Matching Nights use explicit pairs:
+
+```json
+{
+  "type": "matching_night",
+  "pairs": [["Person A", "Person B"]],
+  "lights": 1,
+  "automatic_lights": 0
+}
+```
+
+A sold Matching Night uses `result: "sold"`, keeps its explicit seating pairs,
+and omits `lights`. It neither filters solutions nor creates a light post.
+
+Match Boxes use `result: "yes"`, `"no"`, or `"sold"`. A normal `yes` is a
+complete one-to-one Perfect Match by default. Set `complete_pair: false` only
+when the pair may still belong to a multi-match; a `revealed_group` implies that
+automatically. Cast changes may use
+`match_update.mode: "rebuild"` when an arrival's role is unknown, or `"extend"`
+when the arrival is guaranteed to add an edge to an existing graph. See
+`ayto_data.json` for complete season examples.
+
+All participant images belong to RTL. Follow
+[@AYTOrakel](https://www.instagram.com/AYTOrakel) for the published results.
+
+## Historical performance
+
+Every ongoing-season week gets an additional `*_insta_Performance.png`. It
+compares visible results and solver-only information metrics with completed
+seasons. The historical win chance uses four transparent comparisons at the
+same Matching Night: lights that night, cumulative lights, confirmed Match
+Boxes, and puzzle progress. For each metric it reports how many same-or-worse
+past seasons still won; the displayed chance is their mean and the uncertainty
+is their standard deviation. No machine-learning dependency is required.
+
+After changing any season or event, rebuild `historical_metrics.csv` with
+`python aytorakel.py --build-history --from-scratch`. Normal runs for an ongoing
+season reject missing or stale historical data instead of mixing incompatible
+calculations. The history command never checks face layers or creates posts.
