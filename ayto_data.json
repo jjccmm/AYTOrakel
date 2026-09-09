@@ -7999,6 +7999,57 @@
         "number": 4,
         "events": [
           {
+            "type": "box",
+            "pair": [
+              "Bennett",
+              "Julia"
+            ],
+            "result": "no"
+          },
+          {
+            "type": "matching_night",
+            "lights": 4,
+            "automatic_lights": 1,
+            "pairs": [
+              [
+                "Fabi",
+                "Zoe"
+              ],
+              [
+                "Cansin",
+                "Julia"
+              ],
+              [
+                "Bennett",
+                "Christin"
+              ],
+              [
+                "Raul",
+                "Francesca"
+              ],
+              [
+                "Robin",
+                "Joena"
+              ],
+              [
+                "Daymian",
+                "Jenny"
+              ],
+              [
+                "Marwin",
+                "Emma"
+              ],
+              [
+                "Germain",
+                "Michelle"
+              ],
+              [
+                "Brian",
+                "Alexandra"
+              ]
+            ]
+          },
+          {
             "type": "cast_change",
             "title": "Nachkommer Laurenz",
             "add": [
