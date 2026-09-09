@@ -153,7 +153,7 @@ class ModelTests(unittest.TestCase):
 
 
 class CsvAndRendererTests(unittest.TestCase):
-    def test_csv_roundtrip_and_stale_hash(self):
+    def test_ongoing_season_may_be_newer_than_history(self):
         data = season_data([{"number": 1, "events": []}])
         from ayto_performance import season_source_hash
         record = model_record("toy", 1, "", 0.2, 0.3, 1, status="ongoing")
@@ -163,6 +163,21 @@ class CsvAndRendererTests(unittest.TestCase):
             write_history([record], path)
             loaded = read_history(path)
             self.assertEqual(loaded, [record])
+            validate_history(loaded, {"toy": data})
+            data["target_lights"] = 3
+            validate_history(loaded, {"toy": data})
+
+    def test_completed_season_with_stale_hash_requires_history_rebuild(self):
+        data = season_data([{"number": 1, "events": []}])
+        data["status"] = "completed"
+        data["outcome"] = "won"
+        from ayto_performance import season_source_hash
+        record = model_record("toy", 1, "won", 0.2, 0.3, 1, status="completed")
+        record = PerformanceRecord(**{**record.__dict__, "source_hash": season_source_hash(data)})
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "history.csv"
+            write_history([record], path)
+            loaded = read_history(path)
             validate_history(loaded, {"toy": data})
             data["target_lights"] = 3
             with self.assertRaises(HistoryError):

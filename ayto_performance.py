@@ -334,11 +334,19 @@ def read_history(path: Path = HISTORY_FILE) -> list[PerformanceRecord]:
 def validate_history(
     records: Sequence[PerformanceRecord], seasons: dict[str, dict[str, Any]]
 ) -> None:
+    """Validate only comparison data belonging to completed seasons.
+
+    Ongoing seasons are calculated from the live solver state when their
+    performance post is rendered. Their CSV rows are only snapshots and may
+    legitimately lag behind newly appended events.
+    """
     by_season: dict[str, list[PerformanceRecord]] = {}
     for record in records:
         by_season.setdefault(record.season, []).append(record)
     problems: list[str] = []
     for season, data in seasons.items():
+        if data.get("status") != "completed":
+            continue
         rows = by_season.get(season, [])
         expected_weeks = [int(week["number"]) for week in data["weeks"]]
         if [row.week for row in rows] != expected_weeks:
@@ -347,7 +355,11 @@ def validate_history(
         expected_hash = season_source_hash(data)
         if any(row.source_hash != expected_hash or row.metric_version != METRIC_VERSION for row in rows):
             problems.append(f"{season}: Quelldaten wurden geändert")
-    extras = set(by_season) - set(seasons)
+    extras = {
+        season
+        for season, rows in by_season.items()
+        if season not in seasons and any(row.status == "completed" for row in rows)
+    }
     if extras:
         problems.append("unbekannte Staffeln: " + ", ".join(sorted(extras)))
     if problems:

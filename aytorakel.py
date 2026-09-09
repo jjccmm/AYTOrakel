@@ -260,7 +260,7 @@ def run_season(
             if historical_records is None:
                 raise HistoryError(
                     "Historisches Dataset fehlt. Bitte zuerst "
-                    "`python aytorakel.py --build-history --from-scratch` ausführen."
+                    "`python aytorakel.py --build-history` ausführen."
                 )
             live_records = build_performance_records(
                 season, data, solver.state.event_records
@@ -382,7 +382,7 @@ def main(argv: list[str] | None = None) -> int:
             except HistoryError as error:
                 raise HistoryError(
                     f"{error}. Bitte zuerst `python aytorakel.py "
-                    "--build-history --from-scratch` ausführen."
+                    "--build-history` ausführen."
                 ) from error
 
         missing: list[str] = []

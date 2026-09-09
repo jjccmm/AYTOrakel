@@ -277,6 +277,7 @@ def _complete_pair_mask(
 def matching_night_scores(
     state: SolverState, solutions: np.ndarray, event: dict[str, Any]
 ) -> np.ndarray:
+    """Return total lights; ``event['lights']`` includes automatic lights."""
     scores = np.full(len(solutions), int(event.get("automatic_lights", 0)), dtype=np.uint8)
     for pair in event["pairs"]:
         scores += edge_mask(state, solutions, pair)

@@ -153,6 +153,30 @@ class EventTests(unittest.TestCase):
             matching_night_scores(solver.state, solutions, event), [2, 1]
         )
 
+    def test_reported_lights_are_total_including_automatic_lights(self):
+        data = toy_data(
+            ["A", "B", "C", "D", "E"], ["v", "w", "x", "y", "z"]
+        )
+        solver = SeasonSolver("toy", data)
+        solutions = np.asarray(
+            [
+                [1, 2, 4, 16, 8],  # three listed pairs plus one automatic light
+                [1, 2, 4, 8, 16],  # four listed pairs plus one automatic light
+            ],
+            dtype=np.uint16,
+        )
+        event = {
+            "type": "matching_night",
+            "pairs": [["A", "v"], ["B", "w"], ["C", "x"], ["D", "y"]],
+            "automatic_lights": 1,
+            "lights": 4,
+        }
+        np.testing.assert_array_equal(
+            matching_night_scores(solver.state, solutions, event), [4, 5]
+        )
+        filtered, _ = apply_evidence_event(solver.state, solutions, event)
+        np.testing.assert_array_equal(filtered, solutions[:1])
+
     def test_match_box_yes_no_and_sold(self):
         data = toy_data(["A", "B"], ["x", "y"])
         solver = SeasonSolver("toy", data)
