@@ -266,6 +266,45 @@ class EventTests(unittest.TestCase):
         self.assertEqual(4, len(solver.state.solutions))
         self.assertTrue(all(len(row) == 3 for row in solver.state.solutions))
 
+    def test_extend_cannot_reopen_a_complete_yes_box_pair(self):
+        weeks = [
+            {
+                "number": 1,
+                "events": [
+                    {"type": "box", "pair": ["A", "x"], "result": "yes"}
+                ],
+            },
+            {
+                "number": 2,
+                "events": [
+                    {
+                        "type": "cast_change",
+                        "add": [{"group": "b", "person": "z"}],
+                        "match_update": {
+                            "mode": "extend",
+                            "new_multi_match": {
+                                "group": "bits",
+                                "size": 2,
+                                "known_members": ["z"],
+                            },
+                        },
+                    }
+                ],
+            },
+        ]
+        solver = SeasonSolver(
+            "toy", toy_data(["A", "B"], ["x", "y"], weeks=weeks)
+        )
+        solver.process_week(weeks[0], 0)
+        solver.process_week(weeks[1], 1)
+
+        self.assertEqual(1, len(solver.state.solutions))
+        a_index = solver.state.row_names.index("A")
+        b_index = solver.state.row_names.index("B")
+        z_bit = 1 << solver.state.bit_names.index("z")
+        self.assertFalse(int(solver.state.solutions[0, a_index]) & z_bit)
+        self.assertTrue(int(solver.state.solutions[0, b_index]) & z_bit)
+
     def test_extend_inserts_new_people_alphabetically_and_remaps_graphs(self):
         from ayto_solver import _expand_with_new_participants
 

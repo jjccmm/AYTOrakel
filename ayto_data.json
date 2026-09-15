@@ -3822,9 +3822,7 @@
         {
           "group": "bits",
           "size": 2,
-          "known_members": [
-            "Ken"
-          ]
+          "known_members": []
         }
       ]
     },
@@ -5950,9 +5948,9 @@
               }
             ],
             "face_layer": "insta_styles/image_face_layers/ayto_s5vip_1.png",
-            "match_update": {
-              "mode": "extend",
-              "new_multi_match": {
+          "match_update": {
+            "mode": "extend",
+            "new_multi_match": {
                 "group": "bits",
                 "size": 2,
                 "known_members": [

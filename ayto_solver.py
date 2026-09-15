@@ -733,9 +733,25 @@ class SeasonSolver:
                     continue
                 if mode == "extend":
                     assert self.state.solutions is not None
-                    self.state.solutions = _expand_with_new_participants(
+                    expanded = _expand_with_new_participants(
                         self.state, self.state.solutions, event, old_rows, old_bits
                     )
+                    # Extending an old graph can invalidate evidence that was
+                    # true before the new edge existed. In particular, a Yes
+                    # Box that confirmed a complete normal pair must prevent a
+                    # newcomer from turning either participant into a later
+                    # multi-match.
+                    for prior_event in self._all_prior_evidence(event_index):
+                        expanded, _ = apply_evidence_event(
+                            self.state, expanded, prior_event
+                        )
+                        if len(expanded) == 0:
+                            break
+                    if len(expanded) == 0:
+                        raise NoSolutionsError(
+                            "The cast extension contradicts earlier evidence"
+                        )
+                    self.state.solutions = expanded
                 if event.get("multi_match_members"):
                     self._process_in_memory_event(week_no, event_no, event_index, event)
                 else:
