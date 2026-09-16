@@ -8074,6 +8074,62 @@
             }
           }
         ]
+      },
+      {
+        "number": 5,
+        "events": [
+          {
+            "type": "box",
+            "pair": [
+              "Emma",
+              "Laurenz"
+            ],
+            "result": "sold"
+          },
+          {
+            "type": "matching_night",
+            "lights": 3,
+            "automatic_lights": 1,
+            "pairs": [
+              [
+                "Laurenz",
+                "Zoe"
+              ],
+              [
+                "Brian",
+                "Alexandra"
+              ],
+              [
+                "Germain",
+                "Emma"
+              ],
+              [
+                "Marwin",
+                "Francesca"
+              ],
+              [
+                "Daymian",
+                "Jenny"
+              ],
+              [
+                "Robin",
+                "Joena"
+              ],
+              [
+                "Bennett",
+                "Christin"
+              ],
+              [
+                "Cansin",
+                "Julia"
+              ],
+              [
+                "Raul",
+                "Michelle"
+              ]
+            ]
+          }
+        ]
       }
     ],
     "target_lights": 10,
