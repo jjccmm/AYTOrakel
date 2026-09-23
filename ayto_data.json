@@ -8130,6 +8130,62 @@
             ]
           }
         ]
+      },
+      {
+        "number": 6,
+        "events": [
+          {
+            "type": "box",
+            "pair": [
+              "Raul",
+              "Michelle"
+            ],
+            "result": "no"
+          },
+          {
+            "type": "matching_night",
+            "lights": 5,
+            "automatic_lights": 1,
+            "pairs": [
+              [
+                "Brian",
+                "Alexandra"
+              ],
+              [
+                "Robin",
+                "Joena"
+              ],
+              [
+                "Daymian",
+                "Jenny"
+              ],
+              [
+                "Cansin",
+                "Zoe"
+              ],
+              [
+                "Fabi",
+                "Michelle"
+              ],
+              [
+                "Laurenz",
+                "Emma"
+              ],
+              [
+                "Bennett",
+                "Christin"
+              ],
+              [
+                "Marwin",
+                "Francesca"
+              ],
+              [
+                "Germain",
+                "Julia"
+              ]
+            ]
+          }
+        ]
       }
     ],
     "target_lights": 10,
