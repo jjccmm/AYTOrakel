@@ -7776,7 +7776,8 @@
     },
     "style": {
       "background": "insta_styles/image_backgrounds/ayto_s6vip.png",
-      "face_layer": "insta_styles/image_face_layers/ayto_s6vip_initial.png"
+      "face_layer": "insta_styles/image_face_layers/ayto_s6vip_initial.png",
+      "villa_faces": "insta_styles/s6vip_faces"
     },
     "weeks": [
       {
@@ -8233,6 +8234,58 @@
               ],
               [
                 "Raul",
+                "Alexandra"
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "number": 8,
+        "events": [
+          {
+            "type": "box",
+            "pair": [
+              "Fabi",
+              "Zoe"
+            ],
+            "result": "sold"
+          },
+          {
+            "type": "matching_night",
+            "lights": 6,
+            "automatic_lights": 2,
+            "pairs": [
+              [
+                "Raul",
+                "Francesca"
+              ],
+              [
+                "Robin",
+                "Joena"
+              ],
+              [
+                "Cansin",
+                "Zoe"
+              ],
+              [
+                "Bennett",
+                "Christin"
+              ],
+              [
+                "Brian",
+                "Julia"
+              ],
+              [
+                "Fabi",
+                "Michelle"
+              ],
+              [
+                "Laurenz",
+                "Emma"
+              ],
+              [
+                "Germain",
                 "Alexandra"
               ]
             ]

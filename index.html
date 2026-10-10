@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b1422">
+  <meta name="description" content="Kannst du die AYTO-Staffel lösen? Kombiniere Matchboxen und Matching Nights, teste deine Annahmen und finde die Perfect Matches.">
+  <title>AYTO · Kannst du die Staffel lösen?</title>
+  <link rel="icon" href="./insta_styles/AYTO.png" type="image/png">
+  <link rel="stylesheet" href="./web/styles.css">
+  <script type="module" src="./web/app.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#matching-nights">Zu den Matching Nights</a>
+  <main class="page">
+    <header class="hero">
+      <h1 id="page-title">AYTO Staffel</h1>
+      <p class="subtitle">Kannst du die Staffel lösen?</p>
+      <a class="follow-link" href="https://www.instagram.com/aytorakel/" target="_blank" rel="noopener noreferrer">Folge @AYTOrakel für alle Updates</a>
+      <aside class="info-box" aria-label="Anleitung">
+        <p><strong>Anleitung:</strong></p>
+        <p>Versuche, die Matching Nights aufzulösen, um alle 10 Perfect Matches zu finden. Klicke dafür auf ein Gesicht, um es als Perfect Match anzunehmen. Erneutes Klicken macht die Annahme rückgängig.</p>
+        <p>Gehe am besten Nacht für Nacht durch, bis du zu einem Konflikt kommst und wieder eine Nacht zurückgehen musst, um dort eine Annahme zu ändern.</p>
+      </aside>
+    </header>
+    <div id="load-state" class="load-state" role="status">Die Staffel wird geladen …</div>
+    <div id="game" hidden>
+      <section class="section" id="matching-nights" aria-labelledby="mn-heading">
+        <div class="section-heading"><h2 id="mn-heading">Matching Nights</h2><span class="section-count" id="night-count"></span></div>
+        <fieldset class="difficulty" id="difficulty-controls">
+          <legend>Schwierigkeit:</legend>
+          <label><input type="radio" name="difficulty" value="easy"> Leicht</label>
+          <label><input type="radio" name="difficulty" value="medium" checked> Mittel</label>
+          <label><input type="radio" name="difficulty" value="hard"> Schwer</label>
+        </fieldset>
+        <div class="table-wrap" id="mn-wrap" role="region" aria-label="Matching Nights">
+          <table class="mn-table" id="mn-table"><caption class="sr-only">Sitzpaare, gemeldete Lichter und ungelöste Lichter je offenem Paar. Tippen setzt eine Annahme.</caption></table>
+        </div>
+        <p class="table-note"><span class="outlined yellow">L</span> gemeldete Lichter <span class="note-separator">·</span> <span class="outlined red">?</span> ungelöste Lichter / offene Paare</p>
+      </section>
+      <section class="section" aria-labelledby="mb-heading">
+        <div class="section-heading"><h2 id="mb-heading">Matchboxen</h2></div>
+        <div class="matchboxes" id="matchboxes"></div>
+      </section>
+      <section class="section grid-section" aria-labelledby="grid-heading">
+        <div class="section-heading"><h2 id="grid-heading">Perfect Match Möglichkeiten</h2></div>
+        <ul class="legend" aria-label="Die drei Farben des Grids">
+          <li><span class="swatch impossible" aria-hidden="true"></span>Nicht möglich</li>
+          <li><span class="swatch possible" aria-hidden="true"></span>Möglich</li>
+          <li><span class="swatch match" aria-hidden="true"></span>Perfect Match</li>
+        </ul>
+        <div class="table-wrap grid-wrap" id="grid-wrap" role="region" aria-label="Alle Paare">
+          <table class="match-grid" id="match-grid"><caption class="sr-only">Alle möglichen Paare. Das Grid zeigt die Ergebnisse deiner Annahmen.</caption></table>
+        </div>
+      </section>
+    </div>
+    <p class="sr-only" id="announcement" role="status" aria-live="polite" aria-atomic="true"></p>
+    <footer><a href="https://www.instagram.com/aytorakel/" target="_blank" rel="noopener noreferrer">@AYTOrakel <span aria-hidden="true">↗</span></a><span>Fotos © RTL+</span></footer>
+  </main>
+  <dialog id="solution-dialog" aria-labelledby="solution-title">
+    <button type="button" class="dialog-close" id="close-solution" aria-label="Lösung schließen">×</button>
+    <p class="eyebrow">ALLE LICHTER AN</p><h2 id="solution-title">Gelöst!</h2>
+    <p class="solution-intro">Hier sind die Perfect Matches.</p>
+    <div id="solution-list" class="solution-list"></div>
+    <div class="solution-support">
+      <p>Wenn es dir gefallen hat, kannst du dich mit einem Kaffee bedanken.</p>
+      <a href="https://www.buymeacoffee.com/aytorakel" target="_blank" rel="noopener noreferrer"><img src="https://img.buymeacoffee.com/button-api/?text=Buy%20me%20a%20coffee&amp;emoji=%E2%98%95&amp;slug=aytorakel&amp;button_colour=FFDD00&amp;font_colour=000000&amp;font_family=Cookie&amp;outline_colour=000000&amp;coffee_colour=ffffff" alt="Buy me a coffee" width="217" height="60" loading="lazy"></a>
+    </div>
+    <button type="button" class="button primary" id="back-to-game">Zurück zur Übersicht</button>
+  </dialog>
+  <dialog id="conflict-dialog" aria-labelledby="conflict-title" aria-describedby="conflict-intro conflict-note">
+    <button type="button" class="dialog-close" id="close-conflict" aria-label="Hinweis schließen">×</button>
+    <h2 id="conflict-title">Diese Annahme passt nicht</h2>
+    <p id="conflict-intro" class="conflict-intro"></p>
+    <ul id="conflict-reasons"></ul>
+    <p id="conflict-note">Die Annahme wurde nicht übernommen. Deine bisherigen Einträge bleiben unverändert.</p>
+    <button type="button" class="button primary" id="dismiss-conflict">Verstanden</button>
+  </dialog>
+  <canvas id="confetti" popover="manual" aria-hidden="true"></canvas>
+  <noscript><div class="noscript">Bitte aktiviere JavaScript, um deine Annahmen zu testen.</div></noscript>
+  <script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="aytorakel" data-description="Support me on Buy me a coffee!" data-message="" data-color="#5F7FFF" data-position="Right" data-x_margin="18" data-y_margin="18"></script>
+</body>
+</html>
