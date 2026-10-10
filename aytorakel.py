@@ -34,6 +34,7 @@ from ayto_performance import (
     validate_history,
     write_history,
 )
+from ayto_villa import iter_villa_snapshots, villa_portrait_names
 from insta_renderer import (
     POST_SIZE,
     render_combinations_post,
@@ -43,6 +44,7 @@ from insta_renderer import (
     render_probability_post,
     render_performance_post,
     render_summary,
+    render_villa_post,
 )
 
 
@@ -85,6 +87,15 @@ def validate_artwork(season: str, data: dict[str, Any], through_week: int | None
     with Image.open(background) as image:
         if image.size != POST_SIZE:
             raise DataValidationError(f"{season}: background must be {POST_SIZE}, got {image.size}")
+    if data["style"].get("villa_faces"):
+        directory = Path(data["style"]["villa_faces"])
+        for name in villa_portrait_names(data):
+            portrait = directory / f"{name}.png"
+            if not portrait.is_file():
+                raise DataValidationError(f"{season}: Villa portrait not found: {portrait}")
+            with Image.open(portrait) as image:
+                if image.convert("RGBA").getchannel("A").getbbox() is None:
+                    raise DataValidationError(f"{season}: empty Villa portrait: {portrait}")
     for layer_name, rows, bits in _artwork_states(data, through_week):
         layer = Path(layer_name)
         if not layer.is_file():
@@ -211,6 +222,21 @@ def _render_new_snapshots(
     return rendered
 
 
+def render_villa_posts(
+    season: str,
+    data: dict[str, Any],
+    output_dir: Path,
+    through_week: int | None = None,
+) -> list[Path]:
+    """Backfill Villa posts independently of permutation checkpoints."""
+    rendered = []
+    for snapshot in iter_villa_snapshots(data, through_week):
+        path = render_villa_post(season, data, snapshot, output_dir)
+        rendered.append(path)
+        print(f"{season} W{snapshot.week}: Villa-Wissen -> {path}")
+    return rendered
+
+
 def run_season(
     season: str,
     data: dict[str, Any],
@@ -283,6 +309,8 @@ def run_season(
         checkpoint = save_checkpoint(solver, data)
         print(f"Saved checkpoint {checkpoint}")
         cumulative = week_end
+
+    generated.update(render_villa_posts(season, data, output_dir, through_week))
 
     last_week = solver.state.completed_week or (through_week or 1)
     summary = render_summary(season, data, solver.state.night_records, output_dir, last_week)

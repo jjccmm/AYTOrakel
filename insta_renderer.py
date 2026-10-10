@@ -6,6 +6,7 @@ explicit face-layer authoring guides) are written to disk.
 
 from __future__ import annotations
 
+from functools import lru_cache
 from io import BytesIO
 import os
 from pathlib import Path
@@ -24,6 +25,7 @@ from PIL import Image, ImageDraw, ImageFont
 
 from ayto_solver import NightRecord, Snapshot, flatten_events
 from ayto_performance import PerformanceRecord, WinPrediction
+from ayto_villa import VillaSnapshot
 
 
 POST_SIZE = (1080, 1350)
@@ -44,6 +46,9 @@ ROCKET = LinearSegmentedColormap.from_list(
 )
 PROBABILITY_FONT_SIZE = 14
 SUMMARY_FONT_SIZE = 13
+VILLA_CELL_COLOR = "#03051a"
+VILLA_PAPER_COLOR = "#f5f3ee"
+VILLA_FONT_PATH = Path(matplotlib.get_data_path()) / "fonts/ttf/DejaVuSans.ttf"
 
 
 def _font(size: int) -> ImageFont.FreeTypeFont:
@@ -291,6 +296,455 @@ def render_probability_post(
     suffix = _safe_filename_part(snapshot.title)
     path = output_dir / f"{season}_{snapshot.week}_{snapshot.event_number}_insta_{suffix}.png"
     return _save_png(image, path)
+
+
+@lru_cache(maxsize=16)
+def _villa_font(size: int) -> ImageFont.FreeTypeFont:
+    return ImageFont.truetype(str(VILLA_FONT_PATH), size=size)
+
+
+def _villa_label_font(label: str, width: float, height: float) -> ImageFont.FreeTypeFont:
+    for size in range(14, 5, -1):
+        font = _villa_font(size)
+        left, top, right, bottom = font.getbbox(label)
+        if right - left <= width - 3 and bottom - top <= height - 3:
+            return font
+    raise ValueError(f"Villa label {label!r} does not fit its Matching Night slot")
+
+
+def _draw_centered_text(
+    draw: ImageDraw.ImageDraw,
+    center: tuple[float, float],
+    text: str,
+    font: ImageFont.FreeTypeFont,
+    color: str,
+    stroke_width: int = 0,
+) -> None:
+    left, top, right, bottom = draw.textbbox(
+        (0, 0), text, font=font, stroke_width=stroke_width
+    )
+    draw.text(
+        (center[0] - (left + right) / 2, center[1] - (top + bottom) / 2),
+        text,
+        font=font,
+        fill=color,
+        stroke_width=stroke_width,
+        stroke_fill="black",
+    )
+
+
+def _villa_content_bounds(
+    face_alpha: Image.Image, bounds: tuple[float, float, float, float]
+) -> tuple[float, float, float, float]:
+    """Find the largest text rectangle not covered by a portrait overlay."""
+    x0, y0, x1, y1 = (round(value) for value in bounds)
+    alpha = face_alpha.crop((x0, y0, x1, y1))
+    if alpha.getbbox() is None:
+        return bounds
+    occupied = np.asarray(alpha) != 0
+    heights = [0] * occupied.shape[1]
+    best_area = 0
+    best = (0, 0, 0, 0)
+    for y, row in enumerate(occupied):
+        heights = [0 if blocked else height + 1 for height, blocked in zip(heights, row)]
+        stack: list[tuple[int, int]] = []
+        for x, height in enumerate(heights + [0]):
+            start = x
+            while stack and stack[-1][1] > height:
+                left, previous_height = stack.pop()
+                area = (x - left) * previous_height
+                if area > best_area:
+                    best_area = area
+                    best = (left, y - previous_height + 1, x, y + 1)
+                start = left
+            if height and (not stack or stack[-1][1] < height):
+                stack.append((start, height))
+    if not best_area:
+        raise ValueError("Face layer completely covers a Villa grid cell")
+    left, top, right, bottom = best
+    return x0 + left, y0 + top, x0 + right, y0 + bottom
+
+
+def _render_villa_grid_post(
+    season: str,
+    season_data: dict[str, Any],
+    snapshot: VillaSnapshot,
+    output_dir: Path,
+) -> Path:
+    """Render the public, end-of-week knowledge on the usual pair grid."""
+    season = Path(season).name
+    image = _background(season_data["style"])
+    _draw_header(
+        image, season, snapshot.week, "Villa-Wissen",
+        "Ungelöste Lichter / offene Paare",
+    )
+    draw = ImageDraw.Draw(image)
+    arrangement = " / ".join(
+        f"{row * 3 + 1}–{row * 3 + 3}" for row in range(snapshot.night_rows)
+    )
+    draw.text(
+        (image.width / 2, 211), f"MN: {arrangement}",
+        fill="white", font=_font(18), stroke_width=2,
+        stroke_fill="black", anchor="mm",
+    )
+    with Image.open(snapshot.face_layer) as source:
+        face = source.convert("RGBA")
+    face_alpha = face.getchannel("A")
+    columns, rows = len(snapshot.row_names), len(snapshot.bit_names)
+    x0, y0, width, height = heatmap_bounds(columns, rows)
+    cell_w, cell_h = width / columns, height / rows
+    border = Image.new("RGB", (width + 14, height + 14), "white")
+    border.paste(Image.new("RGB", (width, height), VILLA_CELL_COLOR), (7, 7))
+    image.paste(border, (x0 - 7, y0 - 7))
+    for column in range(1, columns):
+        x = x0 + round(column * cell_w)
+        draw.line((x, y0, x, y0 + height - 1), fill="white", width=1)
+    for row in range(1, rows):
+        y = y0 + round(row * cell_h)
+        draw.line((x0, y, x0 + width - 1, y), fill="white", width=1)
+    column_indices = {name: index for index, name in enumerate(snapshot.row_names)}
+    row_indices = {name: index for index, name in enumerate(snapshot.bit_names)}
+    content_rectangles: dict[tuple[int, int], tuple[float, float, float, float]] = {}
+
+    def content(x: int, y: int) -> tuple[float, float, float, float]:
+        if (x, y) not in content_rectangles:
+            content_rectangles[x, y] = _villa_content_bounds(
+                face_alpha,
+                (
+                    x0 + x * cell_w, y0 + y * cell_h,
+                    x0 + (x + 1) * cell_w, y0 + (y + 1) * cell_h,
+                ),
+            )
+        return content_rectangles[x, y]
+
+    for (a, b), state in snapshot.pair_states.items():
+        x, y = column_indices[a], row_indices[b]
+        if state.result == "yes":
+            marker, color, scale = "+", "green", 0.55
+        else:
+            marker, color = "×", "red"
+            scale = 0.82 if state.source == "box" else 0.35
+        left, top, right, bottom = content(x, y)
+        size = max(10, round(min(cell_w, cell_h) * scale))
+        while size > 6:
+            font = _font(size)
+            ink = font.getbbox(marker, stroke_width=2)
+            if ink[2] - ink[0] <= right - left - 4 and ink[3] - ink[1] <= bottom - top - 4:
+                break
+            size -= 1
+        _draw_centered_text(
+            draw, ((left + right) / 2, (top + bottom) / 2),
+            marker, _font(size), color, stroke_width=2,
+        )
+    for night in snapshot.nights:
+        label = night.label
+        if label is None:
+            continue
+        slot_row, slot_column = divmod(night.number - 1, 3)
+        for a, b in night.open_pairs:
+            x, y = column_indices[a], row_indices[b]
+            left, top, right, bottom = content(x, y)
+            slot_w, slot_h = (right - left) / 3, (bottom - top) / snapshot.night_rows
+            font = _villa_label_font(label, slot_w, slot_h)
+            _draw_centered_text(
+                draw,
+                (
+                    left + (slot_column + 0.5) * slot_w,
+                    top + (slot_row + 0.5) * slot_h,
+                ),
+                label, font, "white",
+            )
+    image.paste(face, (0, 0), face)
+    return _save_png(
+        image, output_dir / f"{season}_{snapshot.week}_insta_Villa.png"
+    )
+
+
+def villa_table_bounds(
+    column_count: int, night_count: int = 10
+) -> tuple[tuple[int, ...], tuple[int, ...]]:
+    """Column slots and row centers for the connected portrait timeline."""
+    left, right, week_width, light_width, remaining_width = 30, 1050, 48, 67, 88
+    cast_left = left + week_width
+    cast_right = right - light_width - remaining_width
+    x_edges = (left, cast_left) + tuple(
+        round(cast_left + (index + 1) * (cast_right - cast_left) / column_count)
+        for index in range(column_count)
+    ) + (right - remaining_width, right)
+    y_edges = (210, 286) + tuple(
+        round(286 + (index + 1) * 740 / night_count)
+        for index in range(night_count)
+    )
+    return x_edges, y_edges
+
+
+def _villa_portraits(directory: Path, names: Iterable[str]) -> dict[str, Image.Image]:
+    portraits = {}
+    for name in names:
+        with Image.open(directory / f"{name}.png") as source:
+            face = source.convert("RGBA")
+        bounds = face.getchannel("A").getbbox()
+        if bounds is None:
+            raise ValueError(f"Empty Villa portrait: {name}")
+        portraits[name] = face.crop(bounds)
+    return portraits
+
+
+def _paste_villa_portrait(
+    image: Image.Image,
+    portrait: Image.Image,
+    bounds: tuple[float, float, float, float],
+    *,
+    preview: bool = False,
+) -> tuple[int, int, int, int]:
+    left, top, right, bottom = bounds
+    scale = min((right - left) / portrait.width, (bottom - top) / portrait.height)
+    face = portrait.resize(
+        (max(1, round(portrait.width * scale)), max(1, round(portrait.height * scale))),
+        Image.Resampling.LANCZOS,
+    )
+    if preview:
+        face.putalpha(face.getchannel("A").point(lambda value: round(value * 0.65)))
+    x, y = round((left + right - face.width) / 2), round((top + bottom - face.height) / 2)
+    image.paste(face, (x, y), face)
+    return x, y, x + face.width, y + face.height
+
+
+def _draw_villa_marker(
+    draw: ImageDraw.ImageDraw, center: tuple[float, float], result: str, size: int
+) -> None:
+    marker, color = {
+        "yes": ("+", "green"),
+        "no": ("\u00d7", "red"),
+        "sold": ("$", "#66ccff"),
+    }[result]
+    if result == "sold":
+        def ink_height(text: str, font_size: int) -> int:
+            bounds = _font(font_size).getbbox(text, stroke_width=2)
+            return bounds[3] - bounds[1]
+
+        target = max(ink_height("+", size), ink_height("\u00d7", size))
+        size = max(10, round(size * target / ink_height("$", size)))
+        while size > 10 and ink_height("$", size) > target:
+            size -= 1
+    _draw_centered_text(draw, center, marker, _font(size), color, stroke_width=2)
+
+
+def _paste_villa_group(
+    image: Image.Image,
+    portraits: dict[str, Image.Image],
+    names: tuple[str, ...],
+    bounds: tuple[float, float, float, float],
+    *,
+    overlap: float = 0.5,
+    preview: bool = False,
+) -> tuple[tuple[int, int, int, int], tuple[tuple[int, int, int, int], ...]]:
+    """Center a group using the union of its overlapping portrait bounds."""
+    left, top, right, bottom = bounds
+    height = bottom - top
+    widths = [portraits[name].width * height / portraits[name].height for name in names]
+    positions = [0.0]
+    for index in range(1, len(names)):
+        positions.append(positions[-1] + widths[index - 1] - min(widths[index - 1], widths[index]) * overlap)
+    width = positions[-1] + widths[-1]
+    scale = min(1, (right - left) / width)
+    group_left = (left + right - width * scale) / 2
+    group_top = (top + bottom - height * scale) / 2
+    placed = []
+    for index, name in enumerate(names):
+        x = group_left + positions[index] * scale
+        placed.append(_paste_villa_portrait(
+            image, portraits[name],
+            (x, group_top, x + widths[index] * scale, group_top + height * scale),
+            preview=preview,
+        ))
+    union = (
+        min(box[0] for box in placed), min(box[1] for box in placed),
+        max(box[2] for box in placed), max(box[3] for box in placed),
+    )
+    return union, tuple(placed)
+
+
+def _villa_smooth_shape(
+    image: Image.Image,
+    bounds: tuple[float, float, float, float],
+    *,
+    radius: float | None = None,
+) -> None:
+    """Antialias a circle or capsule at 4x resolution before compositing it."""
+    scale, padding = 4, 2
+    left, top = int(np.floor(bounds[0])) - padding, int(np.floor(bounds[1])) - padding
+    right, bottom = int(np.ceil(bounds[2])) + padding, int(np.ceil(bounds[3])) + padding
+    width, height = right - left, bottom - top
+    shape = Image.new("RGBA", (width * scale, height * scale), (0, 0, 0, 0))
+    draw = ImageDraw.Draw(shape)
+    local = (
+        (bounds[0] - left) * scale, (bounds[1] - top) * scale,
+        (bounds[2] - left) * scale, (bounds[3] - top) * scale,
+    )
+    if radius is None:
+        draw.ellipse(local, fill=VILLA_PAPER_COLOR)
+    else:
+        draw.rounded_rectangle(local, radius=radius * scale, fill=VILLA_PAPER_COLOR)
+    shape = shape.resize((width, height), Image.Resampling.LANCZOS)
+    image.paste(shape, (left, top), shape)
+
+
+def _draw_villa_disc(
+    image: Image.Image,
+    center: tuple[float, float],
+    radius: float,
+    label: str | None = None,
+    *,
+    color: str = "black",
+    size: int = 26,
+    stroke_width: int = 2,
+) -> None:
+    x, y = center
+    _villa_smooth_shape(image, (x - radius, y - radius, x + radius, y + radius))
+    if label is None:
+        return
+    while True:
+        font = _font(size)
+        left, top, right, bottom = font.getbbox(label, stroke_width=stroke_width)
+        if ((right - left) / 2) ** 2 + ((bottom - top) / 2) ** 2 <= (radius - 3) ** 2 or size <= 10:
+            break
+        size -= 1
+    _draw_centered_text(ImageDraw.Draw(image), center, label, font, color, stroke_width=stroke_width)
+
+
+def _draw_villa_capsule(
+    image: Image.Image,
+    center: tuple[float, float],
+    radius: float,
+    label: str | None,
+    *,
+    color: str = "red",
+) -> None:
+    x, y = center
+    half_width = radius + 20
+    _villa_smooth_shape(image, (x - half_width, y - radius, x + half_width, y + radius), radius=radius)
+    if label is not None:
+        _draw_centered_text(ImageDraw.Draw(image), center, label, _font(26), color, stroke_width=2)
+
+
+def _draw_villa_table_marker(
+    draw: ImageDraw.ImageDraw,
+    bounds: tuple[int, int, int, int],
+    row_bottom: float,
+    result: str,
+) -> None:
+    size = 45 if result == "yes" else 54
+    marker = "+" if result == "yes" else "\u00d7"
+    ink = _font(size).getbbox(marker, stroke_width=2)
+    # Move the symbol down to the portrait's bottom without touching the next row.
+    center_y = min(bounds[3] + 2, row_bottom - (ink[3] - ink[1]) / 2 + 1)
+    _draw_villa_marker(draw, ((bounds[0] + bounds[2]) / 2, center_y), result, size)
+
+
+def _render_villa_table_post(
+    season: str,
+    season_data: dict[str, Any],
+    snapshot: VillaSnapshot,
+    output_dir: Path,
+) -> Path:
+    image = _background(season_data["style"])
+    _draw_header(image, season, snapshot.week, "Villa-Wissen")
+    draw = ImageDraw.Draw(image)
+    names = set(snapshot.table_columns)
+    for row in snapshot.table_rows:
+        names.update(name for partners in row.seatings.values() for name in partners)
+    for box in snapshot.matchboxes:
+        names.update(box.people)
+    portraits = _villa_portraits(Path(season_data["style"]["villa_faces"]), sorted(names))
+    x_edges, y_edges = villa_table_bounds(len(snapshot.table_columns), len(snapshot.table_rows))
+    week_x = (x_edges[0] + x_edges[1]) / 2
+    light_x = (x_edges[-3] + x_edges[-2]) / 2
+    remaining_x = (x_edges[-2] + x_edges[-1]) / 2
+    header_y = (y_edges[0] + y_edges[1]) / 2
+    draw.line((week_x + 16, header_y, remaining_x, header_y), fill=VILLA_PAPER_COLOR, width=3)
+    draw.line((x_edges[0], y_edges[1], x_edges[-1], y_edges[1]), fill="black", width=3)
+    _draw_villa_disc(image, (week_x, header_y), 16, "W", size=19, stroke_width=0)
+    _draw_villa_disc(image, (light_x, header_y), 24, "L", color="yellow", size=26)
+    _draw_villa_disc(image, (remaining_x, header_y), 24, "?", color="red", size=26)
+    for index, name in enumerate(snapshot.table_columns):
+        _paste_villa_portrait(image, portraits[name], (
+            x_edges[index + 1] + 2, y_edges[0],
+            x_edges[index + 2] - 2, y_edges[1] - 2,
+        ))
+    for index, row in enumerate(snapshot.table_rows):
+        top, bottom = y_edges[index + 1:index + 3]
+        center_y = (top + bottom) / 2
+        row_image = image if row.played else image.copy()
+        row_draw = ImageDraw.Draw(row_image)
+        row_draw.line((week_x + 16, center_y, remaining_x + 20, center_y), fill=VILLA_PAPER_COLOR, width=3)
+        _draw_villa_disc(row_image, (week_x, center_y), 16, str(row.number), size=14, stroke_width=0)
+        sold = row.played and row.lights is None
+        _draw_villa_disc(
+            row_image, (light_x, center_y), 24,
+            ("$" if sold else str(row.lights)) if row.played else None,
+            color="#66ccff" if sold else "yellow",
+        )
+        remaining_label = row.remaining_label
+        if sold and remaining_label is not None:
+            remaining_label = remaining_label.replace("?", "$")
+        _draw_villa_capsule(
+            row_image, (remaining_x, center_y), 24, remaining_label,
+            color="#66ccff" if sold else "red",
+        )
+        for column, name in enumerate(snapshot.table_columns):
+            partners = row.seatings.get(name, ())
+            if not partners:
+                continue
+            union, placed = _paste_villa_group(
+                row_image, portraits, partners,
+                (x_edges[column + 1] + 2, center_y - 34, x_edges[column + 2] - 2, center_y + 34),
+            )
+            states = [snapshot.pair_states.get((name, partner)) for partner in partners]
+            if all(states) and len({state.result for state in states}) == 1:
+                # The entire confirmed double match shares one large symbol.
+                _draw_villa_table_marker(row_draw, union, bottom, states[0].result)
+            else:
+                for state, bounds in zip(states, placed):
+                    if state:
+                        _draw_villa_table_marker(row_draw, bounds, bottom, state.result)
+        if not row.played:
+            image.paste(Image.blend(image, row_image, 0.5))
+    _draw_centered_text(draw, (540, 1053), "Matchbox-Entscheidungen", _font(26), "white", stroke_width=2)
+    if snapshot.matchboxes:
+        columns, gap = 6, 12
+        rows = (len(snapshot.matchboxes) + columns - 1) // columns
+        slot_width = (1020 - (columns - 1) * gap) / columns
+        slot_height = min(104, (220 - (rows - 1) * gap) / rows)
+        for index, box in enumerate(snapshot.matchboxes):
+            row, column = divmod(index, columns)
+            left = 30 + column * (slot_width + gap)
+            top = 1080 + row * (slot_height + gap)
+            right, bottom = left + slot_width, top + slot_height
+            caption = f"W{box.week}"
+            _draw_centered_text(draw, ((left + right) / 2, top + 12), caption, _villa_font(14), "white", stroke_width=1)
+            union, _ = _paste_villa_group(
+                image, portraits, box.people,
+                (left + 6, top + 23, right - 6, bottom - 18), overlap=0.4,
+            )
+            _draw_villa_marker(
+                draw, ((union[0] + union[2]) / 2, min(union[3] - 7, bottom - 22)),
+                box.result, 60,
+            )
+    return _save_png(image, output_dir / f"{season}_{snapshot.week}_insta_Villa.png")
+
+
+def render_villa_post(
+    season: str,
+    season_data: dict[str, Any],
+    snapshot: VillaSnapshot,
+    output_dir: Path,
+) -> Path:
+    """Use the portrait table when individual faces are configured."""
+    season = Path(season).name
+    if season_data["style"].get("villa_faces"):
+        return _render_villa_table_post(season, season_data, snapshot, output_dir)
+    return _render_villa_grid_post(season, season_data, snapshot, output_dir)
 
 
 def render_light_post(
