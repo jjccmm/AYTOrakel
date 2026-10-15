@@ -8291,6 +8291,58 @@
             ]
           }
         ]
+      },
+      {
+        "number": 9,
+        "events": [
+          {
+            "type": "box",
+            "pair": [
+              "Germain",
+              "Alexandra"
+            ],
+            "result": "no"
+          },
+          {
+            "type": "matching_night",
+            "lights": 8,
+            "automatic_lights": 2,
+            "pairs": [
+              [
+                "Germain",
+                "Michelle"
+              ],
+              [
+                "Laurenz",
+                "Emma"
+              ],
+              [
+                "Robin",
+                "Joena"
+              ],
+              [
+                "Brian",
+                "Julia"
+              ],
+              [
+                "Raul",
+                "Alexandra"
+              ],
+              [
+                "Marwin",
+                "Francesca"
+              ],
+              [
+                "Bennett",
+                "Christin"
+              ],
+              [
+                "Cansin",
+                "Zoe"
+              ]
+            ]
+          }
+        ]
       }
     ],
     "target_lights": 10,
